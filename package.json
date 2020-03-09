@@ -1,0 +1,84 @@
+{
+  "name": "cdk-ssm-documents",
+  "description": "CDK Construct for managing SSM Documents",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Daniel Schroeder",
+    "url": "https://www.udondan.com/",
+    "twitter": "udondan"
+  },
+  "awscdkio": {
+    "twitter": "udondan"
+  },
+  "homepage": "https://github.com/udondan/cdk-ssm-documents",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udondan/cdk-ssm-documents.git"
+  },
+  "bugs": {
+    "url": "https://github.com/udondan/cdk-ssm-documents/issues"
+  },
+  "keywords": [],
+  "stability": "experimental",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "jsii",
+    "build:watch": "jsii -w",
+    "package": "jsii-pacmak",
+    "test": "jest"
+  },
+  "jsii": {
+    "outdir": "dist",
+    "targets": {
+      "python": {
+        "distName": "cdk-ssm-documents",
+        "module": "cdk_ssm_documents"
+      },
+      "java": {
+        "package": "com.udondan.cdkSsmDocuments",
+        "maven": {
+          "groupId": "com.udondan",
+          "artifactId": "cdk-ssm-documents"
+        }
+      },
+      "dotnet": {
+        "namespace": "CDK.SsmDocuments",
+        "packageId": "CDK.SsmDocuments"
+      }
+    }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ]
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.24.0",
+    "@types/node": "10.17.5",
+    "@types/jest": "^25.1.2",
+    "jest": "^25.1.0",
+    "jsii": "^0.22.0",
+    "jsii-pacmak": "^0.22.0",
+    "typescript": "~3.7.2",
+    "@types/js-yaml": "^3.12.2",
+    "ts-node": "^8.1.0"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloudformation": "^1.24.0",
+    "@aws-cdk/aws-iam": "^1.24.0",
+    "@aws-cdk/aws-kms": "^1.24.0",
+    "@aws-cdk/aws-lambda": "^1.24.0",
+    "@aws-cdk/aws-s3": "^1.24.0",
+    "@aws-cdk/core": "^1.24.0"
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-cloudformation": "^1.24.0",
+    "@aws-cdk/aws-iam": "^1.24.0",
+    "@aws-cdk/aws-kms": "^1.24.0",
+    "@aws-cdk/aws-lambda": "^1.24.0",
+    "@aws-cdk/aws-s3": "^1.24.0",
+    "@aws-cdk/core": "^1.24.0"
+  }
+}

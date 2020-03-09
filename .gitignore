@@ -1,0 +1,4 @@
+.jsii
+node_modules
+dist
+tsconfig.json
