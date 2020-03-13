@@ -61,7 +61,7 @@ export class Document extends cdk.Construct {
             return existing as lambda.Function;
         }
 
-        const policy = new iam.ManagedPolicy(this, 'SSM-Document-Manager-Policy', {
+        const policy = new iam.ManagedPolicy(stack, 'SSM-Document-Manager-Policy', {
             managedPolicyName: `${stack.stackName}-${cleanID}`,
             description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
             statements: [
@@ -106,7 +106,7 @@ export class Document extends cdk.Construct {
             ],
         });
 
-        const role = new iam.Role(this, 'SSM-Document-Manager-Role', {
+        const role = new iam.Role(stack, 'SSM-Document-Manager-Role', {
             roleName: `${stack.stackName}-${cleanID}`,
             description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -116,7 +116,7 @@ export class Document extends cdk.Construct {
             ]
         });
 
-        const fn = new lambda.Function(this, constructName, {
+        const fn = new lambda.Function(stack, constructName, {
             functionName: `${stack.stackName}-${cleanID}`,
             role: role,
             description: 'Custom CFN resource: Manage SSM Documents',
