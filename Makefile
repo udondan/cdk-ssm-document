@@ -45,7 +45,7 @@ maven:
 		--workdir ${DOCKER_WORKDIR} \
 		--volume ${PWD}:${DOCKER_WORKDIR} \
 		--env GITHUB_TOKEN \
-		--env GITHUB_REPOSITORY=udondan/cdk-ssm-documents \
+		--env GITHUB_REPOSITORY=udondan/cdk-ssm-document \
 		${DOCKER_IMAGE}:${DOCKER_TAG}
 
 

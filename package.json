@@ -1,5 +1,5 @@
 {
-  "name": "cdk-ssm-documents",
+  "name": "cdk-ssm-document",
   "description": "CDK Construct for managing SSM Documents",
   "version": "0.0.0",
   "license": "MIT",
@@ -11,13 +11,13 @@
   "awscdkio": {
     "twitter": "udondan"
   },
-  "homepage": "https://github.com/udondan/cdk-ssm-documents",
+  "homepage": "https://github.com/udondan/cdk-ssm-document",
   "repository": {
     "type": "git",
-    "url": "https://github.com/udondan/cdk-ssm-documents.git"
+    "url": "https://github.com/udondan/cdk-ssm-document.git"
   },
   "bugs": {
-    "url": "https://github.com/udondan/cdk-ssm-documents/issues"
+    "url": "https://github.com/udondan/cdk-ssm-document/issues"
   },
   "keywords": [],
   "stability": "experimental",
@@ -37,12 +37,12 @@
     "outdir": "dist",
     "targets": {
       "python": {
-        "distName": "cdk-ssm-documents",
-        "module": "cdk_ssm_documents"
+        "distName": "cdk-ssm-document",
+        "module": "cdk_ssm_document"
       },
       "dotnet": {
-        "namespace": "CDK.SSM.Documents",
-        "packageId": "CDK.SSM.Documents"
+        "namespace": "CDK.SSM.Document",
+        "packageId": "CDK.SSM.Document"
       }
     }
   },
