@@ -27,7 +27,8 @@ export class Document extends cdk.Construct {
         const name = this.fixDocumentName(props.name);
 
         if (name.length < 3 || name.length > 128) {
-            throw Error(`SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`);
+            this.node.addError(`SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`);
+            return;
         }
 
         let content = props.content;
