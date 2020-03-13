@@ -1,4 +1,4 @@
-# CDK SSM Documents
+# CDK SSM Document
 
 [![CDK docs](https://img.shields.io/badge/CDK-docs-orange)][docs]
 [![npm version](https://badge.fury.io/js/cdk-ssm-document.svg)][npm]
@@ -8,7 +8,12 @@
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
-Documentation pending...
+Roadmap:
+
+- Documentation
+- Example
+- Function / Parameter documentation
+- Tests
 
    [AWS CDK]: https://aws.amazon.com/cdk/
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
