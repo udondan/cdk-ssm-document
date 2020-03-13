@@ -35,6 +35,9 @@ export class Document extends cdk.Construct {
             content = yaml.safeLoad(content.toString());
         }
 
+        const tags = props.tags || {};
+        tags.CreatedBy = ID;
+
         new cfn.CustomResource(this, `SSMDoc-${name}`, {
             provider: cfn.CustomResourceProvider.fromLambda(fn),
             resourceType: resourceType,
@@ -45,7 +48,7 @@ export class Document extends cdk.Construct {
                 documentType: props.documentType || 'Command',
                 targetType: props.targetType || '/',
                 StackName: stack,
-                tags: props.tags || {},
+                tags: tags,
             }
         });
     }
