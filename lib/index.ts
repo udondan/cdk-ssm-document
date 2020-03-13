@@ -32,7 +32,7 @@ export class Document extends cdk.Construct {
         }
 
         let content = props.content;
-        if (typeof content !== 'string') {
+        if (typeof content === 'string') {
             content = yaml.safeLoad(content.toString());
         }
 
