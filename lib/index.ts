@@ -38,7 +38,7 @@ export class Document extends cdk.Construct {
         const tags = props.tags || {};
         tags.CreatedBy = ID;
 
-        new cfn.CustomResource(this, `SSMDoc-${name}`, {
+        new cfn.CustomResource(this, `SSM-Document-${name}`, {
             provider: cfn.CustomResourceProvider.fromLambda(fn),
             resourceType: resourceType,
             properties: {
@@ -55,13 +55,13 @@ export class Document extends cdk.Construct {
 
     private ensureLambda(): lambda.Function {
         const stack = cdk.Stack.of(this);
-        const constructName = 'SSM-Document-Manager';
+        const constructName = 'SSM-Document-Manager-Lambda';
         const existing = stack.node.tryFindChild(constructName);
         if (existing) {
             return existing as lambda.Function;
         }
 
-        const policy = new iam.ManagedPolicy(this, 'Policy', {
+        const policy = new iam.ManagedPolicy(this, 'SSM-Document-Manager-Policy', {
             managedPolicyName: `${stack.stackName}-${cleanID}`,
             description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
             statements: [
@@ -106,7 +106,7 @@ export class Document extends cdk.Construct {
             ],
         });
 
-        const role = new iam.Role(this, 'Role', {
+        const role = new iam.Role(this, 'SSM-Document-Manager-Role', {
             roleName: `${stack.stackName}-${cleanID}`,
             description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
