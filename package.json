@@ -35,7 +35,16 @@
       "lambda"
     ],
     "outdir": "dist",
-    "targets": {}
+    "targets": {
+      "python": {
+        "distName": "cdk-ssm-documents",
+        "module": "cdk_ssm_documents"
+      },
+      "dotnet": {
+        "namespace": "CDK.SSM.Documents",
+        "packageId": "CDK.SSM.Documents"
+      }
+    }
   },
   "jest": {
     "moduleFileExtensions": [
