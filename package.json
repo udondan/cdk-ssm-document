@@ -1,7 +1,7 @@
 {
   "name": "cdk-ssm-documents",
   "description": "CDK Construct for managing SSM Documents",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "MIT",
   "author": {
     "name": "Daniel Schroeder",
@@ -27,27 +27,15 @@
     "build": "jsii",
     "build:watch": "jsii -w",
     "package": "jsii-pacmak",
+    "prepackage": "jsii && lambda/build",
     "test": "jest"
   },
   "jsii": {
+    "excludeTypescript": [
+      "lambda"
+    ],
     "outdir": "dist",
-    "targets": {
-      "python": {
-        "distName": "cdk-ssm-documents",
-        "module": "cdk_ssm_documents"
-      },
-      "java": {
-        "package": "com.udondan.cdkSsmDocuments",
-        "maven": {
-          "groupId": "com.udondan",
-          "artifactId": "cdk-ssm-documents"
-        }
-      },
-      "dotnet": {
-        "namespace": "CDK.SsmDocuments",
-        "packageId": "CDK.SsmDocuments"
-      }
-    }
+    "targets": {}
   },
   "jest": {
     "moduleFileExtensions": [
@@ -56,14 +44,17 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.24.0",
-    "@types/node": "10.17.5",
+    "@types/aws-lambda": "^8.10.46",
     "@types/jest": "^25.1.2",
+    "@types/js-yaml": "^3.12.2",
+    "@types/node": "10.17.5",
+    "aws-lambda": "^1.0.5",
+    "aws-sdk": "^2.635.0",
     "jest": "^25.1.0",
     "jsii": "^0.22.0",
     "jsii-pacmak": "^0.22.0",
-    "typescript": "~3.7.2",
-    "@types/js-yaml": "^3.12.2",
-    "ts-node": "^8.1.0"
+    "ts-node": "^8.1.0",
+    "typescript": "~3.7.2"
   },
   "dependencies": {
     "@aws-cdk/aws-cloudformation": "^1.24.0",
