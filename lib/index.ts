@@ -110,7 +110,7 @@ export interface DocumentContent {
 export interface DocumentProps extends cdk.StackProps {
 
     /**
-    * Defined if the default version should be updated to the latest version on document updates.
+    * Defines if the default version should be updated to the latest version on document updates.
     *
     * @default true
     */
