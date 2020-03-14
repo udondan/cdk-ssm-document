@@ -27,10 +27,10 @@ export class TestStack extends cdk.Stack {
                 description: 'Echo Hello World!',
                 parameters: {
                     text: {
-                        default: "Hello World!",
-                        description: "Text to echo",
-                        type: "String"
-                    }
+                        default: 'Hello World!',
+                        description: 'Text to echo',
+                        type: 'String',
+                    },
                 },
                 mainSteps: [
                     {
@@ -38,14 +38,14 @@ export class TestStack extends cdk.Stack {
                         action: 'aws:runShellScript',
                         inputs: {
                             runCommand: [
-                                'echo "{{text}}"'
+                                'echo "{{text}}"',
                             ],
                         },
                         precondition: {
                             StringEquals: [
-                                "platformType",
-                                "Linux"
-                            ]
+                                'platformType',
+                                'Linux',
+                            ],
                         },
                     },
                 ],
