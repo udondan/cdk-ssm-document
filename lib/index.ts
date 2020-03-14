@@ -5,8 +5,6 @@ import cdk = require('@aws-cdk/core');
 import yaml = require('js-yaml');
 import path = require('path');
 
-
-
 export interface DocumentParameter {
     readonly type: string;
     readonly description: string;
