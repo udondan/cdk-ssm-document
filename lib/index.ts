@@ -5,12 +5,47 @@ import cdk = require('@aws-cdk/core');
 import yaml = require('js-yaml');
 import path = require('path');
 
+
+
+export interface DocumentParameter {
+    readonly type: string;
+    readonly description: string;
+    readonly default?: any;
+    readonly allowedValues?: string[];
+    readonly allowedPattern?: string;
+    readonly displayType?: string;
+    readonly minItems?: number;
+    readonly maxItems?: number;
+    readonly minChars?: number;
+    readonly maxChars?: number;
+}
+
+export interface DocumentMainSteps {
+    readonly action: string;
+    readonly name: string;
+    readonly inputs: {
+        [key: string]: any;
+    };
+    readonly precondition?: {
+        [key: string]: any;
+    };
+}
+
+export interface DocumentContent {
+    readonly schemaVersion: string;
+    readonly description?: string;
+    readonly mainSteps: DocumentMainSteps[];
+    readonly parameters?: {
+        [key: string]: DocumentParameter;
+    };
+}
+
 export interface DocumentProps extends cdk.StackProps {
     readonly updateDefaultVersion?: boolean;
     readonly name: string;
     readonly documentType?: string;
     readonly targetType?: string;
-    readonly content: any;
+    readonly content: string | DocumentContent;
 }
 
 const resourceType = 'Custom::SSM-Document';
@@ -32,8 +67,9 @@ export class Document extends cdk.Construct {
         }
 
         let content = props.content;
+
         if (typeof content === 'string') {
-            content = yaml.safeLoad(content.toString());
+            content = yaml.safeLoad(content);
         }
 
         const tags = props.tags || {};
