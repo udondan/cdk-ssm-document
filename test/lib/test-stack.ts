@@ -10,18 +10,18 @@ export class TestStack extends cdk.Stack {
 
         let file = path.join(__dirname, '../documents/hello-world-yaml.yml');
         new Document(this, 'SSM-Document-HelloWorld-Yaml', {
-            name: `HelloWorld-from-yaml-file`,
+            name: 'HelloWorld-from-yaml-file',
             content: fs.readFileSync(file).toString(),
         });
 
         file = path.join(__dirname, '../documents/hello-world-json.json');
         new Document(this, 'SSM-Document-HelloWorld-Json', {
-            name: `HelloWorld-from-json-file`,
+            name: 'HelloWorld-from-json-file',
             content: fs.readFileSync(file).toString(),
         });
 
         new Document(this, 'SSM-Document-HelloWorld-Inline', {
-            name: `HelloWorld-from-inline`,
+            name: 'HelloWorld-from-inline',
             content: {
                 schemaVersion: '2.2',
                 description: 'Echo Hello World!',

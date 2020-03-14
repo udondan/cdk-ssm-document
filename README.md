@@ -34,7 +34,7 @@ export class TestStack extends cdk.Stack {
 
         const file = path.join(__dirname, '../documents/hello-world-yaml.yml');
         new Document(this, 'SSM-Document-HelloWorld', {
-            name: `HelloWorld`,
+            name: 'HelloWorld',
             content: fs.readFileSync(file).toString(),
         });
     }
@@ -54,7 +54,7 @@ export class TestStack extends cdk.Stack {
         super(scope, id, props);
 
         new Document(this, 'SSM-Document-HelloWorld', {
-            name: `HelloWorld`,
+            name: 'HelloWorld',
             content: {
                 schemaVersion: '2.2',
                 description: 'Echo Hello World!',
@@ -121,7 +121,7 @@ export class TestStack extends cdk.Stack {
 
 If you're still not convinced to use the [AWS CDK], you can still use the Lambda as a [custom resource] in your CFN template. Here is how:
 
-1. **Create a zip fie for the Lambda:**
+1. **Create a zip file for the Lambda:**
 
    To create a zip from the Lambda source run:
 
