@@ -19,8 +19,19 @@
   "bugs": {
     "url": "https://github.com/udondan/cdk-ssm-document/issues"
   },
-  "keywords": [],
-  "stability": "experimental",
+  "keywords": [
+    "aws",
+    "cdk",
+    "aws-cdk",
+    "aws-cdk-construct",
+    "ssm",
+    "aws-ssm",
+    "ssm-document",
+    "aws-ssm-document",
+    "cloudformation",
+    "cloudformation-custom-resource"
+  ],
+  "stability": "stable",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
