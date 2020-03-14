@@ -152,6 +152,12 @@ const lambdaTimeout = 3; // minutes
  * An SSM document
  */
 export class Document extends cdk.Construct {
+
+    /**
+    * Name of the document
+    */
+    public readonly name: string = '';
+
     /**
     * Defines a new SSM document
     */
@@ -190,7 +196,7 @@ export class Document extends cdk.Construct {
             }
         });
 
-        return document;
+        this.name = document.getAttString('Name');
     }
 
     private ensureLambda(): lambda.Function {

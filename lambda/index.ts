@@ -210,6 +210,7 @@ function sendResponse(event: Event, context: Context, responseStatus: string, re
         LogicalResourceId: event.LogicalResourceId,
         Data: {
             Message: responseData,
+            Name: event.ResourceProperties.Name,
         },
     });
 
