@@ -5,3 +5,5 @@ tsconfig.json
 lambda/*
 !lambda/*.ts
 !lambda/build
+**/*.js
+**/*.d.ts
