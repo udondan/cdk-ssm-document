@@ -1,0 +1,28 @@
+{
+    "schemaVersion": "2.2",
+    "description": "Echo Hello World!",
+    "parameters": {
+        "text": {
+            "default": "Hello World!",
+            "description": "Text to echo",
+            "type": "String"
+        }
+    },
+    "mainSteps": [
+        {
+            "name": "echo",
+            "action": "aws:runShellScript",
+            "inputs": {
+                "runCommand": [
+                    "echo \"{{text}}\""
+                ]
+            },
+            "precondition": {
+                "StringEquals": [
+                    "platformType",
+                    "Linux"
+                ]
+            }
+        }
+    ]
+}
