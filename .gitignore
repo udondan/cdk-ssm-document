@@ -7,3 +7,4 @@ lambda/*
 !lambda/build
 **/*.js
 **/*.d.ts
+**/cdk.out
