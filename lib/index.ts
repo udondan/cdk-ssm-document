@@ -80,7 +80,7 @@ export interface DocumentMainStep {
 export interface DocumentContent {
 
     /**
-    * The schema version to use, e.g. 2.2
+    * The schema version to use. Currently only version 2.2 is supported
     */
     readonly schemaVersion: string;
 
@@ -97,7 +97,7 @@ export interface DocumentContent {
     readonly mainSteps: DocumentMainStep[];
 
     /**
-    * The parameters the document accepts.
+    * The parameters the document accepts
     */
     readonly parameters?: {
         [key: string]: DocumentParameter;
@@ -110,7 +110,7 @@ export interface DocumentContent {
 export interface DocumentProps extends cdk.StackProps {
 
     /**
-    * Defines if the default version should be updated to the latest version on document updates.
+    * Defines if the default version should be updated to the latest version on document updates
     *
     * @default true
     */
@@ -124,14 +124,14 @@ export interface DocumentProps extends cdk.StackProps {
     readonly name: string;
 
     /**
-    * Document type based on the service that you want to use.
+    * Document type based on the service that you want to use
     *
     * @default Command
     */
     readonly documentType?: string;
 
     /**
-    * Types of resources the document can run on. For example, `/AWS::EC2::Instance` or `/` for all resource types.
+    * Types of resources the document can run on. For example, `/AWS::EC2::Instance` or `/` for all resource types
     *
     * @default /
     */

@@ -8,12 +8,12 @@
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
-CloudFormation's support for SSM Documents [currently is lacking updating functionality](https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/339). Instead of updating a document, CFN will replace it. The old document is destroyed and a new one is saved with a different name. This is problematic because:
+CloudFormation's support for SSM Documents [currently is lacking updating functionality](https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/339). Instead of updating a document, CFN will replace it. The old document is destroyed and a new one is created with a different name. This is problematic because:
 
 - When names potentially changes, you cannot directly reference a document
 - Old versions are permanently lost
 
-This construct provides document support in a way it should have been implemented in the first place:
+This construct provides document support in a way you'd expect it:
 
 - Changes on documents will cerate new versions
 - Versions cannot be deleted
@@ -32,7 +32,7 @@ export class TestStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
-        const file = path.join(__dirname, '../documents/hello-world-yaml.yml');
+        const file = path.join(__dirname, '../documents/hello-world.yml');
         new Document(this, 'SSM-Document-HelloWorld', {
             name: 'HelloWorld',
             content: fs.readFileSync(file).toString(),
@@ -133,7 +133,7 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
 
 1. **Upload the Lambda function:**
 
-   Upload this  zip file to an S3 bucket via cli, Console or however you like.
+   Upload this zip file to an S3 bucket via cli, Console or however you like.
 
    Example via cli:
 
