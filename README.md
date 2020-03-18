@@ -11,7 +11,7 @@
 
 CloudFormation's support for SSM Documents [currently is lacking updating functionality](https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/339). Instead of updating a document, CFN will replace it. The old document is destroyed and a new one is created with a different name. This is problematic because:
 
-- When names potentially changes, you cannot directly reference a document
+- When names potentially change, you cannot directly reference a document
 - Old versions are permanently lost
 
 This construct provides document support in a way you'd expect it:
@@ -247,13 +247,13 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
 ## Roadmap
 
 - Automated Tests
-- Tagging support in a more standardized way
+- Tagging support in a more standard way
 
    [AWS CDK]: https://aws.amazon.com/cdk/
    [custom resource]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
    [PyPI]: https://pypi.org/project/cdk-ssm-document/
    [NuGet]: https://www.nuget.org/packages/CDK.SSM.Document/
-   [docs]: https://awscdk.io/packages/cdk-ssm-document@1.0.0
+   [docs]: https://awscdk.io/packages/cdk-ssm-document@1.0.1
    [source]: https://github.com/udondan/cdk-ssm-document
    [license]: https://github.com/udondan/cdk-ssm-document/blob/master/LICENSE
