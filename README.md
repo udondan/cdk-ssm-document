@@ -246,7 +246,6 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
 
 ## Roadmap
 
-- Automated Tests
 - Tagging support in a more standard way
 
    [AWS CDK]: https://aws.amazon.com/cdk/
