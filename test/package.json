@@ -21,6 +21,6 @@
     "source-map-support": "^0.5.16"
   },
   "peerDependencies": {
-    "cdk-ec2-key-pair": "file:.."
+    "cdk-ssm-document": "file:.."
   }
 }
