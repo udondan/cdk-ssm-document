@@ -6,6 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/cdk-ssm-document.svg)][PyPI]
 [![NuGet version](https://badge.fury.io/nu/CDK.SSM.Document.svg)][NuGet]
 [![GitHub](https://img.shields.io/github/license/udondan/cdk-ssm-document)][license]
+![Deploy](https://github.com/udondan/cdk-ssm-document/workflows/Deploy/badge.svg)
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
