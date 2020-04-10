@@ -1,17 +1,11 @@
-build:
+install:
+	@cd .. && npm i
+
+build: install
 	@npm run build
 
-list: build
-	cdk ls
-
-diff: build
-	@cdk diff
-
-synth: build
-	@cdk synth
-
 deploy: build
-	@cdk deploy
+	@cdk deploy --require-approval never
 
-destroy: build
-	@cdk destroy
+DESTROY: build
+	@cdk destroy --force
