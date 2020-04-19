@@ -151,7 +151,7 @@ const lambdaTimeout = 3; // minutes
 /**
  * An SSM document
  */
-export class Document extends cdk.Construct {
+export class Document extends cdk.Construct implements cdk.ITaggable {
 
     /**
     * Name of the document
@@ -159,10 +159,18 @@ export class Document extends cdk.Construct {
     public readonly name: string = '';
 
     /**
+    * Resource tags
+    */
+    public readonly tags: cdk.TagManager;
+
+    /**
     * Defines a new SSM document
     */
     constructor(scope: cdk.Construct, id: string, props: DocumentProps) {
         super(scope, id);
+
+        this.tags = new cdk.TagManager(cdk.TagType.MAP, 'Custom::SSM-Document');
+        this.tags.setTag('CreatedBy', ID);
 
         const stack = cdk.Stack.of(this).stackName;
         const fn = this.ensureLambda();
@@ -179,9 +187,6 @@ export class Document extends cdk.Construct {
             content = yaml.safeLoad(content);
         }
 
-        const tags = props.tags || {};
-        tags.CreatedBy = ID;
-
         const document = new cfn.CustomResource(this, `SSM-Document-${name}`, {
             provider: cfn.CustomResourceProvider.fromLambda(fn),
             resourceType: resourceType,
@@ -192,7 +197,7 @@ export class Document extends cdk.Construct {
                 documentType: props.documentType || 'Command',
                 targetType: props.targetType || '/',
                 StackName: stack,
-                tags: tags,
+                tags: cdk.Lazy.anyValue({ produce: () => this.tags.renderTags() }),
             }
         });
 
