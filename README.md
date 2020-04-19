@@ -245,10 +245,6 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
            CreatedBy: CFN::Resource::Custom::SSM-Document # required, see above policy conditions
    ```
 
-## Roadmap
-
-- Tagging support in a more standard way
-
    [AWS CDK]: https://aws.amazon.com/cdk/
    [custom resource]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
