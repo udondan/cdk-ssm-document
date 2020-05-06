@@ -69,7 +69,7 @@ function updateDocument(event: Event): Promise<Event | AWS.AWSError> {
             DocumentVersion: '$LATEST',
         }, function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
             if (err && err.code == 'DuplicateDocumentContent') { // this is expected in case of a rollback after a failed update
-                logger.error(`Update failed due to ${err.code}. Possibly rollback.`);
+                logger.warn(`Update failed due to ${err.code}. Possibly rollback.`);
                 resolve(event);
             } else if (err) {
                 reject(err);
