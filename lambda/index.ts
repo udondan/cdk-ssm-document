@@ -1,16 +1,15 @@
-import { CustomResource, Event, StandardLogger } from 'aws-cloudformation-custom-resource';
+import { CustomResource, Event, LambdaEvent, StandardLogger } from 'aws-cloudformation-custom-resource';
 import { Callback, Context } from 'aws-lambda';
 import AWS = require('aws-sdk');
 
 const ssm = new AWS.SSM();
+const logger = new StandardLogger();
 
 const defaultTargetType = '/';
 var latestVersion: string; // stores the latest version on updates
 
-const logger = new StandardLogger();
-
 export const handler = function (
-    event: Event = {},
+    event: LambdaEvent = {},
     context: Context,
     callback: Callback
 ) {
@@ -36,8 +35,12 @@ function Create(event: Event): Promise<Event | AWS.AWSError> {
                 Tags: makeTags(event, event.ResourceProperties),
             },
             function (err: AWS.AWSError, data: AWS.SSM.CreateDocumentResult) {
-                if (err) reject(err);
-                else resolve(data);
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                event.addResponseValue('Name', event.ResourceProperties.Name);
+                resolve(event);
             }
         );
     });
@@ -50,6 +53,7 @@ function Update(event: Event): Promise<Event | AWS.AWSError> {
             .then(updateDocumentRemoveTags)
             .then(updateDocumentDefaultVersion)
             .then(function (data) {
+                event.addResponseValue('Name', event.ResourceProperties.Name);
                 resolve(data);
             })
             .catch(function (err: AWS.AWSError) {
