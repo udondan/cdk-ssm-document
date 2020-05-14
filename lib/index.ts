@@ -9,55 +9,54 @@ import path = require('path');
  * An SSM document parameter
  */
 export interface DocumentParameter {
-
     /**
-    *  Allowed values include the following: String, StringList, Boolean, Integer, MapList, and StringMap. To view examples of each type, see https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-plugins.html#top-level-properties-type
-    */
+     *  Allowed values include the following: String, StringList, Boolean, Integer, MapList, and StringMap. To view examples of each type, see https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-plugins.html#top-level-properties-type
+     */
     readonly type: string;
 
     /**
-    * A description of the parameter
-    */
+     * A description of the parameter
+     */
     readonly description: string;
 
     /**
-    * The default value of the parameter or a reference to a parameter in Parameter Store
-    */
+     * The default value of the parameter or a reference to a parameter in Parameter Store
+     */
     readonly default?: any;
 
     /**
-    * Allowed values for the parameter
-    */
+     * Allowed values for the parameter
+     */
     readonly allowedValues?: string[];
 
     /**
-    * The regular expression the parameter must match
-    */
+     * The regular expression the parameter must match
+     */
     readonly allowedPattern?: string;
 
     /**
-    *  Used to display either a textfield or a textarea in the AWS console. textfield is a single-line text box. textarea is a multi-line text area
-    */
+     *  Used to display either a textfield or a textarea in the AWS console. textfield is a single-line text box. textarea is a multi-line text area
+     */
     readonly displayType?: string;
 
     /**
-    * The minimum number of items allowed
-    */
+     * The minimum number of items allowed
+     */
     readonly minItems?: number;
 
     /**
-    * The maximum number of items allowed
-    */
+     * The maximum number of items allowed
+     */
     readonly maxItems?: number;
 
     /**
-    * The minimum number of parameter characters allowed
-    */
+     * The minimum number of parameter characters allowed
+     */
     readonly minChars?: number;
 
     /**
-    * The maximum number of parameter characters allowed
-    */
+     * The maximum number of parameter characters allowed
+     */
     readonly maxChars?: number;
 }
 
@@ -78,27 +77,26 @@ export interface DocumentMainStep {
  * For details see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-doc-syntax.html
  */
 export interface DocumentContent {
-
     /**
-    * The schema version to use. Currently only version 2.2 is supported
-    */
+     * The schema version to use. Currently only version 2.2 is supported
+     */
     readonly schemaVersion: string;
 
     /**
-    * Information you provide to describe the purpose of the document
-    */
+     * Information you provide to describe the purpose of the document
+     */
     readonly description?: string;
 
     /**
-    * An object that can include multiple steps (plugins). Steps include one or more actions, an optional precondition, a unique name of the action, and inputs (parameters) for those actions.
-    *
-    * For more information about documents, including information about creating documents and the differences between schema versions, see https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-plugins.html
-    */
+     * An object that can include multiple steps (plugins). Steps include one or more actions, an optional precondition, a unique name of the action, and inputs (parameters) for those actions.
+     *
+     * For more information about documents, including information about creating documents and the differences between schema versions, see https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-plugins.html
+     */
     readonly mainSteps: DocumentMainStep[];
 
     /**
-    * The parameters the document accepts
-    */
+     * The parameters the document accepts
+     */
     readonly parameters?: {
         [key: string]: DocumentParameter;
     };
@@ -108,38 +106,37 @@ export interface DocumentContent {
  * Definition of the SSM document
  */
 export interface DocumentProps extends cdk.StackProps {
-
     /**
-    * Defines if the default version should be updated to the latest version on document updates
-    *
-    * @default true
-    */
+     * Defines if the default version should be updated to the latest version on document updates
+     *
+     * @default true
+     */
     readonly updateDefaultVersion?: boolean;
 
     /**
-    * Name of the document
-    *
-    * The name must be between 3 and 128 characters. Valid characters are a-z, A-Z, 0-9, and _, -, and . only
-    */
+     * Name of the document
+     *
+     * The name must be between 3 and 128 characters. Valid characters are a-z, A-Z, 0-9, and _, -, and . only
+     */
     readonly name: string;
 
     /**
-    * Document type based on the service that you want to use
-    *
-    * @default Command
-    */
+     * Document type based on the service that you want to use
+     *
+     * @default Command
+     */
     readonly documentType?: string;
 
     /**
-    * Types of resources the document can run on. For example, `/AWS::EC2::Instance` or `/` for all resource types
-    *
-    * @default /
-    */
+     * Types of resources the document can run on. For example, `/AWS::EC2::Instance` or `/` for all resource types
+     *
+     * @default /
+     */
     readonly targetType?: string;
 
     /**
-    * Content of the SSM document. Can be passed as string or as object
-    */
+     * Content of the SSM document. Can be passed as string or as object
+     */
     readonly content: string | DocumentContent;
 }
 
@@ -152,20 +149,19 @@ const lambdaTimeout = 3; // minutes
  * An SSM document
  */
 export class Document extends cdk.Construct implements cdk.ITaggable {
-
     /**
-    * Name of the document
-    */
+     * Name of the document
+     */
     public readonly name: string = '';
 
     /**
-    * Resource tags
-    */
+     * Resource tags
+     */
     public readonly tags: cdk.TagManager;
 
     /**
-    * Defines a new SSM document
-    */
+     * Defines a new SSM document
+     */
     constructor(scope: cdk.Construct, id: string, props: DocumentProps) {
         super(scope, id);
 
@@ -177,7 +173,9 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
         const name = this.fixDocumentName(props.name);
 
         if (name.length < 3 || name.length > 128) {
-            this.node.addError(`SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`);
+            this.node.addError(
+                `SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`
+            );
             return;
         }
 
@@ -197,8 +195,10 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
                 documentType: props.documentType || 'Command',
                 targetType: props.targetType || '/',
                 StackName: stack,
-                tags: cdk.Lazy.anyValue({ produce: () => this.tags.renderTags() }),
-            }
+                tags: cdk.Lazy.anyValue({
+                    produce: () => this.tags.renderTags(),
+                }),
+            },
         });
 
         this.name = document.getAttString('Name');
@@ -212,50 +212,54 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
             return existing as lambda.Function;
         }
 
-        const policy = new iam.ManagedPolicy(stack, 'SSM-Document-Manager-Policy', {
-            managedPolicyName: `${stack.stackName}-${cleanID}`,
-            description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
-            statements: [
-                new iam.PolicyStatement({
-                    actions: [
-                        'ssm:ListDocuments',
-                        'ssm:ListTagsForResource',
-                    ],
-                    resources: ['*'],
-                }),
-                new iam.PolicyStatement({
-                    actions: [
-                        'ssm:CreateDocument',
-                        'ssm:AddTagsToResource',
-                    ],
-                    resources: ['*'],
-                    conditions: {
-                        StringEquals: {
-                            'aws:RequestTag/CreatedBy': ID,
-                        }
-                    },
-                }),
-                new iam.PolicyStatement({
-                    actions: [
-                        'ssm:DeleteDocument',
-                        'ssm:DescribeDocument',
-                        'ssm:GetDocument',
-                        'ssm:ListDocumentVersions',
-                        'ssm:ModifyDocumentPermission',
-                        'ssm:UpdateDocument',
-                        'ssm:UpdateDocumentDefaultVersion',
-                        'ssm:AddTagsToResource',
-                        'ssm:RemoveTagsFromResource',
-                    ],
-                    resources: ['*'],
-                    conditions: {
-                        StringEquals: {
-                            'aws:ResourceTag/CreatedBy': ID,
-                        }
-                    },
-                }),
-            ],
-        });
+        const policy = new iam.ManagedPolicy(
+            stack,
+            'SSM-Document-Manager-Policy',
+            {
+                managedPolicyName: `${stack.stackName}-${cleanID}`,
+                description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
+                statements: [
+                    new iam.PolicyStatement({
+                        actions: [
+                            'ssm:ListDocuments',
+                            'ssm:ListTagsForResource',
+                        ],
+                        resources: ['*'],
+                    }),
+                    new iam.PolicyStatement({
+                        actions: [
+                            'ssm:CreateDocument',
+                            'ssm:AddTagsToResource',
+                        ],
+                        resources: ['*'],
+                        conditions: {
+                            StringEquals: {
+                                'aws:RequestTag/CreatedBy': ID,
+                            },
+                        },
+                    }),
+                    new iam.PolicyStatement({
+                        actions: [
+                            'ssm:DeleteDocument',
+                            'ssm:DescribeDocument',
+                            'ssm:GetDocument',
+                            'ssm:ListDocumentVersions',
+                            'ssm:ModifyDocumentPermission',
+                            'ssm:UpdateDocument',
+                            'ssm:UpdateDocumentDefaultVersion',
+                            'ssm:AddTagsToResource',
+                            'ssm:RemoveTagsFromResource',
+                        ],
+                        resources: ['*'],
+                        conditions: {
+                            StringEquals: {
+                                'aws:ResourceTag/CreatedBy': ID,
+                            },
+                        },
+                    }),
+                ],
+            }
+        );
 
         const role = new iam.Role(stack, 'SSM-Document-Manager-Role', {
             roleName: `${stack.stackName}-${cleanID}`,
@@ -263,8 +267,10 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
             managedPolicies: [
                 policy,
-                iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-            ]
+                iam.ManagedPolicy.fromAwsManagedPolicyName(
+                    'service-role/AWSLambdaBasicExecutionRole'
+                ),
+            ],
         });
 
         const fn = new lambda.Function(stack, constructName, {
@@ -273,8 +279,10 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
             description: 'Custom CFN resource: Manage SSM Documents',
             runtime: lambda.Runtime.NODEJS_10_X,
             handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/code.zip')),
-            timeout: cdk.Duration.minutes(lambdaTimeout)
+            code: lambda.Code.fromAsset(
+                path.join(__dirname, '../lambda/code.zip')
+            ),
+            timeout: cdk.Duration.minutes(lambdaTimeout),
         });
 
         return fn;

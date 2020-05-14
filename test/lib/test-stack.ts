@@ -37,15 +37,10 @@ export class TestStack extends cdk.Stack {
                         name: 'echo',
                         action: 'aws:runShellScript',
                         inputs: {
-                            runCommand: [
-                                'echo "{{text}}"',
-                            ],
+                            runCommand: ['echo "{{text}}"'],
                         },
                         precondition: {
-                            StringEquals: [
-                                'platformType',
-                                'Linux',
-                            ],
+                            StringEquals: ['platformType', 'Linux'],
                         },
                     },
                 ],
