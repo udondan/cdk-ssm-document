@@ -182,7 +182,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
     let content = props.content;
 
     if (typeof content === 'string') {
-      content = yaml.safeLoad(content);
+      content = yaml.safeLoad(content) as DocumentContent;
     }
 
     const document = new cfn.CustomResource(this, `SSM-Document-${name}`, {
