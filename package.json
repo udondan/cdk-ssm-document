@@ -1,83 +1,86 @@
 {
-    "name": "cdk-ssm-document",
-    "description": "CDK Construct for managing SSM Documents",
-    "version": "0.0.0",
-    "license": "Apache-2.0",
-    "author": {
-        "name": "Daniel Schroeder",
-        "url": "https://www.udondan.com/",
-        "twitter": "udondan"
-    },
-    "awscdkio": {
-        "twitter": "udondan"
-    },
-    "homepage": "https://github.com/udondan/cdk-ssm-document",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/udondan/cdk-ssm-document.git"
-    },
-    "bugs": {
-        "url": "https://github.com/udondan/cdk-ssm-document/issues"
-    },
-    "keywords": [
-        "aws",
-        "cdk",
-        "aws-cdk",
-        "aws-cdk-construct",
-        "ssm",
-        "aws-ssm",
-        "ssm-document",
-        "aws-ssm-document",
-        "cloudformation",
-        "cloudformation-custom-resource"
+  "name": "cdk-ssm-document",
+  "description": "CDK Construct for managing SSM Documents",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Daniel Schroeder",
+    "url": "https://www.udondan.com/",
+    "twitter": "udondan"
+  },
+  "awscdkio": {
+    "twitter": "udondan"
+  },
+  "homepage": "https://github.com/udondan/cdk-ssm-document",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udondan/cdk-ssm-document.git"
+  },
+  "bugs": {
+    "url": "https://github.com/udondan/cdk-ssm-document/issues"
+  },
+  "keywords": [
+    "aws",
+    "cdk",
+    "aws-cdk",
+    "aws-cdk-construct",
+    "ssm",
+    "aws-ssm",
+    "ssm-document",
+    "aws-ssm-document",
+    "cloudformation",
+    "cloudformation-custom-resource"
+  ],
+  "stability": "stable",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "jsii",
+    "build:watch": "jsii -w",
+    "package": "jsii-pacmak",
+    "prepackage": "jsii && lambda/build"
+  },
+  "jsii": {
+    "excludeTypescript": [
+      "lambda"
     ],
-    "stability": "stable",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "scripts": {
-        "build": "jsii",
-        "build:watch": "jsii -w",
-        "package": "jsii-pacmak",
-        "prepackage": "jsii && lambda/build"
-    },
-    "jsii": {
-        "excludeTypescript": [
-            "lambda"
-        ],
-        "outdir": "dist",
-        "targets": {
-            "python": {
-                "distName": "cdk-ssm-document",
-                "module": "cdk_ssm_document"
-            },
-            "dotnet": {
-                "namespace": "CDK.SSM.Document",
-                "packageId": "CDK.SSM.Document"
-            }
-        }
-    },
-    "devDependencies": {
-        "@aws-cdk/assert": "^1.27.0",
-        "@types/aws-lambda": "^8.10.46",
-        "@types/js-yaml": "^3.12.2",
-        "@types/node": "10.17.5",
-        "aws-lambda": "^1.0.5",
-        "aws-sdk": "^2.635.0",
-        "jsii": "^1.1.0",
-        "jsii-pacmak": "^1.1.0",
-        "ts-node": "^8.1.0",
-        "typescript": "~3.7.2"
-    },
-    "dependencies": {
-        "@aws-cdk/aws-cloudformation": "^1.24.0",
-        "@aws-cdk/aws-iam": "^1.24.0",
-        "@aws-cdk/aws-lambda": "^1.24.0",
-        "@aws-cdk/core": "^1.24.0"
-    },
-    "peerDependencies": {
-        "@aws-cdk/aws-cloudformation": "^1.24.0",
-        "@aws-cdk/aws-iam": "^1.24.0",
-        "@aws-cdk/aws-lambda": "^1.24.0",
-        "@aws-cdk/core": "^1.24.0"
+    "outdir": "dist",
+    "targets": {
+      "python": {
+        "distName": "cdk-ssm-document",
+        "module": "cdk_ssm_document"
+      },
+      "dotnet": {
+        "namespace": "CDK.SSM.Document",
+        "packageId": "CDK.SSM.Document"
+      }
     }
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.47.0",
+    "@types/aws-lambda": "^8.10.46",
+    "@types/js-yaml": "^3.12.2",
+    "@types/node": "10.17.5",
+    "aws-lambda": "^1.0.5",
+    "aws-sdk": "^2.635.0",
+    "jsii": "^1.5.0",
+    "jsii-pacmak": "^1.5.0",
+    "ts-node": "^8.1.0",
+    "typescript": "~3.7.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloudformation": "^1.47.0",
+    "@aws-cdk/aws-iam": "^1.47.0",
+    "@aws-cdk/aws-lambda": "^1.47.0",
+    "@aws-cdk/core": "^1.47.0",
+    "iam-floyd": "^0.13.0"
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-cloudformation": "^1.47.0",
+    "@aws-cdk/aws-iam": "^1.47.0",
+    "@aws-cdk/aws-lambda": "^1.47.0",
+    "@aws-cdk/core": "^1.47.0",
+    "constructs": "^3.0.4",
+    "iam-floyd": "^0.13.0"
+  }
 }
