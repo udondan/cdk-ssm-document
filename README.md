@@ -1,12 +1,18 @@
 # CDK SSM Document
 
-[![Source](https://img.shields.io/badge/Source-GitHub-blue)][source]
-[![Docs](https://img.shields.io/badge/Docs-awscdk.io-orange)][docs]
-[![npm version](https://badge.fury.io/js/cdk-ssm-document.svg)][npm]
-[![PyPI version](https://badge.fury.io/py/cdk-ssm-document.svg)][PyPI]
-[![NuGet version](https://badge.fury.io/nu/CDK.SSM.Document.svg)][NuGet]
+[![Source](https://img.shields.io/badge/Source-GitHub-blue?logo=github)][source]
+[![Test](https://github.com/udondan/cdk-ssm-document/workflows/Test/badge.svg)](https://github.com/udondan/cdk-ssm-document/actions?query=workflow%3ATest)
 [![GitHub](https://img.shields.io/github/license/udondan/cdk-ssm-document)][license]
-![Deploy](https://github.com/udondan/cdk-ssm-document/workflows/Deploy/badge.svg)
+[![Docs](https://img.shields.io/badge/awscdk.io--cdk--ssm--document-orange)][docs]
+
+[![npm package](https://img.shields.io/npm/v/cdk-ssm-document?color=brightgreen)][npm]
+[![PyPI package](https://img.shields.io/pypi/v/cdk-ssm-document?color=brightgreen)][PyPI]
+[![NuGet package](https://img.shields.io/nuget/v/CDK.SSM.Document?color=brightgreen)][NuGet]
+
+![Downloads](https://img.shields.io/badge/-DOWNLOADS:-brightgreen?color=gray)
+[![npm](https://img.shields.io/npm/dt/cdk-ssm-document?label=npm&color=blueviolet)][npm]
+[![PyPI](https://img.shields.io/pypi/dm/cdk-ssm-document?label=pypi&color=blueviolet)][PyPI]
+[![NuGet](https://img.shields.io/nuget/dt/CDK.SSM.Document?label=nuget&color=blueviolet)][NuGet]
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
