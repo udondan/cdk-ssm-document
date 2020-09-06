@@ -2,7 +2,7 @@ import cfn = require('@aws-cdk/aws-cloudformation');
 import iam = require('@aws-cdk/aws-iam');
 import lambda = require('@aws-cdk/aws-lambda');
 import cdk = require('@aws-cdk/core');
-import * as statement from 'iam-floyd';
+import * as statement from 'cdk-iam-floyd';
 import yaml = require('js-yaml');
 import path = require('path');
 
@@ -217,23 +217,23 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
       managedPolicyName: `${stack.stackName}-${cleanID}`,
       description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
       statements: [
-        new statement.Ssm().allow().listDocuments().listTagsForResource(),
+        new statement.Ssm().allow().toListDocuments().toListTagsForResource(),
         new statement.Ssm()
           .allow()
-          .createDocument()
-          .addTagsToResource()
-          .ifRequestTag('CreatedBy', ID),
+          .toCreateDocument()
+          .toAddTagsToResource()
+          .ifAwsRequestTag('CreatedBy', ID),
         new statement.Ssm()
           .allow()
-          .deleteDocument()
-          .describeDocument()
-          .getDocument()
-          .listDocumentVersions()
-          .modifyDocumentPermission()
-          .updateDocument()
-          .updateDocumentDefaultVersion()
-          .addTagsToResource()
-          .removeTagsFromResource()
+          .toDeleteDocument()
+          .toDescribeDocument()
+          .toGetDocument()
+          .toListDocumentVersions()
+          .toModifyDocumentPermission()
+          .toUpdateDocument()
+          .toUpdateDocumentDefaultVersion()
+          .toAddTagsToResource()
+          .toRemoveTagsFromResource()
           .ifResourceTag('CreatedBy', ID),
       ],
     });
