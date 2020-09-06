@@ -13,55 +13,19 @@ build:
 package: build
 	@npm run package
 
-docker-build:
-	docker run -it \
-		--workdir ${DOCKER_WORKDIR} \
-		--volume ${PWD}:${DOCKER_WORKDIR} \
-		--env VERSION=${VERSION} \
-		--env BUILD_SOURCE=true \
-		--env BUILD_PACKAGES=true \
-		${DOCKER_IMAGE}:${DOCKER_TAG}
-
-npm:
-	docker run -it \
-		--workdir ${DOCKER_WORKDIR} \
-		--volume ${PWD}:${DOCKER_WORKDIR} \
-		--env NPM_TOKEN \
-		${DOCKER_IMAGE}:${DOCKER_TAG}
-
-pypi:
-	docker run -it \
-		--workdir ${DOCKER_WORKDIR} \
-		--volume ${PWD}:${DOCKER_WORKDIR} \
-		--env PYPI_TOKEN \
-		${DOCKER_IMAGE}:${DOCKER_TAG}
-
-nuget:
-	docker run -it \
-		--workdir ${DOCKER_WORKDIR} \
-		--volume ${PWD}:${DOCKER_WORKDIR} \
-		--env NUGET_TOKEN \
-		${DOCKER_IMAGE}:${DOCKER_TAG}
-
-maven:
-	docker run -it \
-		--workdir ${DOCKER_WORKDIR} \
-		--volume ${PWD}:${DOCKER_WORKDIR} \
-		--env GITHUB_TOKEN \
-		--env GITHUB_REPOSITORY=udondan/cdk-ssm-document \
-		${DOCKER_IMAGE}:${DOCKER_TAG}
 
 
 
-
+install: clean
+	@npm i
+	@cd test && npm i
 
 test: build
-	npm run test
+	@lambda/build
+	@cd test && npm run build && cdk deploy
 
-test-update:
-	npm run test -- -u
-
-
+clean:
+	@rm -rf node_modules package-lock.json test/node_modules test/package-lock.json
 
 
 tag:
