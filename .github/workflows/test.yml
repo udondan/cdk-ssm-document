@@ -21,7 +21,7 @@ jobs:
 
       - name: Set Permissions for Build
         run: | 
-          sh -c "sudo chmod -R 777 /github"
+          sh -c "sudo chmod -R 777 /github/workspace/test"
 
       - name: Deploy
         uses: udondan/cdk-nodejs@v0.4.0
