@@ -1,6 +1,6 @@
 install:
 	@cd .. && npm i
-	@sudo chmod -R 777 /github/workspace/test
+	@chmod -R 777 /github/workspace/test
 
 build: install
 	@npm run build
