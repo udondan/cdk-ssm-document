@@ -20,6 +20,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set Permissions for Build
+        uses: udondan/cdk-nodejs@v0.4.0
         run: | 
           sh -c "sudo chmod -R 777 /github/workspace/test"
 
