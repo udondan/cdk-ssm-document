@@ -8,17 +8,14 @@ const logger = new StandardLogger();
 const defaultTargetType = '/';
 var latestVersion: string; // stores the latest version on updates
 
-export const handler = function (
-  event: LambdaEvent = {},
-  context: Context,
-  callback: Callback
-) {
-  new CustomResource(event, context, callback, logger)
-    .onCreate(Create)
-    .onUpdate(Update)
-    .onDelete(Delete)
-    .handle(event);
+export const handler = function (event: Event, context: Context, callback: Callback) {
+  new CustomResource(context, callback)
+      .onCreate(Create)
+      .onUpdate(Update)
+      .onDelete(Delete)
+      .handle(event);
 };
+
 
 function Create(event: Event): Promise<Event | AWS.AWSError> {
   logger.info(
