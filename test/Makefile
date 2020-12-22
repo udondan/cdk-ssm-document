@@ -5,6 +5,7 @@ build: install
 	@npm run build
 
 deploy: build lambda
+	@chmod -R 777 /github/workspace/test
 	@cdk deploy --require-approval never
 
 DESTROY: build
