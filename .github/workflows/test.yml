@@ -19,6 +19,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Set Permissions for Build
+        run: | 
+          sh -c "sudo chmod -R 777 /github"
+
       - name: Deploy
         uses: udondan/cdk-nodejs@v0.4.0
         with:
