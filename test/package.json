@@ -9,15 +9,15 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.79.0",
+    "@aws-cdk/assert": "1.77.0",
     "@types/node": "14.14.14",
-    "aws-cdk": "1.79.0",
+    "aws-cdk": "1.77.0",
     "ts-node": "^9.1.1",
     "typescript": "~4.1.3",
     "cdk-ssm-document": "file:.."
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.79.0",
+    "@aws-cdk/core": "1.77.0",
     "source-map-support": "^0.5.19"
   },
   "peerDependencies": {
