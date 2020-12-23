@@ -12,9 +12,9 @@
     "@aws-cdk/assert": "^1.47.0",
     "@types/node": "10.17.5",
     "aws-cdk": "1.47.0",
+    "cdk-ssm-document": "file:..",
     "ts-node": "^8.1.0",
-    "typescript": "~3.8.3",
-    "cdk-ssm-document": "file:.."
+    "typescript": "~3.8.3"
   },
   "dependencies": {
     "@aws-cdk/core": "^1.47.0",
