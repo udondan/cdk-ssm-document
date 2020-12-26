@@ -9,3 +9,4 @@ lambda/*
 **/*.js
 **/*.d.ts
 **/cdk.out
+**/package-lock.json
