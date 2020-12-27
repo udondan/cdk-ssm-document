@@ -14,10 +14,10 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-cloudformation": "1.x",
-    "@aws-cdk/aws-iam": "1.x",
-    "@aws-cdk/aws-lambda": "1.x",
-    "@aws-cdk/core": "1.x",
-    "cdk-ssm-document": "../lib"
+    "@aws-cdk/aws-cloudformation": "^1.47.0",
+    "@aws-cdk/aws-iam": "^1.47.0",
+    "@aws-cdk/aws-lambda": "^1.47.0",
+    "@aws-cdk/core": "^1.47.0",
+    "cdk-ssm-document": "file:.."
   }
 }
