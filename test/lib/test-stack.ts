@@ -1,7 +1,8 @@
 import * as cdk from '@aws-cdk/core';
-import { Document } from 'cdk-ssm-document';
 import fs = require('fs');
 import path = require('path');
+
+import { Document } from '../../lib';
 
 export class TestStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
