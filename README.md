@@ -26,6 +26,24 @@ This construct provides document support in a way you'd expect it:
 - Changes on documents will cerate new versions
 - Versions cannot be deleted
 
+## Installation
+
+This package has peer dependencies, which need to be installed along in the expected version.
+
+For TypeScript/NodeJS, add these to your `dependencies` in `package.json`:
+
+- cdk-ssm-document
+- @aws-cdk/aws-cloudformation
+- @aws-cdk/aws-iam
+- @aws-cdk/aws-lambda
+
+For Python, add these to your `requirements.txt`:
+
+- cdk-ssm-document
+- aws-cdk.aws-cloudformation
+- aws-cdk.aws-iam
+- aws-cdk.aws-lambda
+
 ## Usage
 
 ### Creating a document from a YAML or JSON file
