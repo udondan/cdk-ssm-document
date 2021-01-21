@@ -73,14 +73,14 @@
     "typescript": "~4.1.3"
   },
   "dependencies": {
-    "cdk-iam-floyd": "^0.112.1"
+    "cdk-iam-floyd": "0.120.0"
   },
   "peerDependencies": {
     "@aws-cdk/aws-cloudformation": "^1.47.0",
     "@aws-cdk/aws-iam": "^1.47.0",
     "@aws-cdk/aws-lambda": "^1.47.0",
     "@aws-cdk/core": "^1.47.0",
-    "cdk-iam-floyd": "^0.112.1",
+    "cdk-iam-floyd": "0.120.0",
     "constructs": "^3.2.80"
   }
 }
