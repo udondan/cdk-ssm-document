@@ -6,6 +6,12 @@ import * as statement from 'cdk-iam-floyd';
 import yaml = require('js-yaml');
 import path = require('path');
 
+const resourceType = 'Custom::SSM-Document';
+const ID = `CFN::Resource::${resourceType}`;
+const createdByTag = 'CreatedByCfnCustomResource';
+const cleanID = ID.replace(/:+/g, '-');
+const lambdaTimeout = 3; // minutes
+
 /**
  * An SSM document parameter
  */
@@ -141,11 +147,6 @@ export interface DocumentProps extends cdk.StackProps {
   readonly content: string | DocumentContent;
 }
 
-const resourceType = 'Custom::SSM-Document';
-const ID = `CFN::Resource::${resourceType}`;
-const cleanID = ID.replace(/:+/g, '-');
-const lambdaTimeout = 3; // minutes
-
 /**
  * An SSM document
  */
@@ -167,7 +168,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
     super(scope, id);
 
     this.tags = new cdk.TagManager(cdk.TagType.MAP, 'Custom::SSM-Document');
-    this.tags.setTag('CreatedBy', ID);
+    this.tags.setTag(createdByTag, ID);
 
     const stack = cdk.Stack.of(this).stackName;
     const fn = this.ensureLambda();
@@ -222,7 +223,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
           .allow()
           .toCreateDocument()
           .toAddTagsToResource()
-          .ifAwsRequestTag('CreatedBy', ID),
+          .ifAwsRequestTag(createdByTag, ID),
         new statement.Ssm()
           .allow()
           .toDeleteDocument()
@@ -234,7 +235,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
           .toUpdateDocumentDefaultVersion()
           .toAddTagsToResource()
           .toRemoveTagsFromResource()
-          .ifResourceTag('CreatedBy', ID),
+          .ifResourceTag(createdByTag, ID),
       ],
     });
 

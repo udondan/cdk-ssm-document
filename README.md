@@ -209,7 +209,7 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
                Resource: "*"
                Condition:
                  StringEquals:
-                   aws:RequestTag/CreatedBy: CFN::Resource::Custom::SSM-Document
+                   aws:RequestTag/CreatedByCfnCustomResource: CFN::Resource::Custom::SSM-Document
              - Effect: Allow
                Action:
                  - ssm:DeleteDocument
@@ -224,7 +224,7 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
                Resource: "*"
                Condition:
                  StringEquals:
-                   aws:ResourceTag/CreatedBy: CFN::Resource::Custom::SSM-Document
+                   aws:ResourceTag/CreatedByCfnCustomResource: CFN::Resource::Custom::SSM-Document
 
      SSMDocFunction:
        Type: AWS::Lambda::Function
@@ -266,7 +266,7 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
          DocumentType: Command # default: Command
          TargetType: / # default: /
          Tags:
-           CreatedBy: CFN::Resource::Custom::SSM-Document # required, see above policy conditions
+           CreatedByCfnCustomResource: CFN::Resource::Custom::SSM-Document # required, see above policy conditions
    ```
 
    [AWS CDK]: https://aws.amazon.com/cdk/
