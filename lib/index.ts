@@ -162,6 +162,11 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
   public readonly tags: cdk.TagManager;
 
   /**
+   * The lambda function that is created
+   */
+  public readonly lambda: lambda.IFunction;
+
+  /**
    * Defines a new SSM document
    */
   constructor(scope: cdk.Construct, id: string, props: DocumentProps) {
@@ -171,7 +176,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
     this.tags.setTag(createdByTag, ID);
 
     const stack = cdk.Stack.of(this).stackName;
-    const fn = this.ensureLambda();
+    this.lambda = this.ensureLambda();
     const name = this.fixDocumentName(props.name);
 
     if (name.length < 3 || name.length > 128) {
@@ -188,7 +193,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
     }
 
     const document = new cfn.CustomResource(this, `SSM-Document-${name}`, {
-      provider: cfn.CustomResourceProvider.fromLambda(fn),
+      provider: cfn.CustomResourceProvider.fromLambda(this.lambda),
       resourceType: resourceType,
       properties: {
         updateDefaultVersion: props.updateDefaultVersion || true,
