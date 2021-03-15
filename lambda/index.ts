@@ -20,7 +20,7 @@ export const handler = function (
     .handle(event);
 };
 
-function Create(event: Event): Promise<Event | AWS.AWSError> {
+function Create(event: Event): Promise<Event> {
   logger.info(
     `Attempting to create SSM document ${event.ResourceProperties.Name}`
   );
@@ -45,7 +45,7 @@ function Create(event: Event): Promise<Event | AWS.AWSError> {
   });
 }
 
-function Update(event: Event): Promise<Event | AWS.AWSError> {
+function Update(event: Event): Promise<Event> {
   return new Promise(function (resolve, reject) {
     updateDocument(event)
       .then(updateDocumentAddTags)
@@ -67,7 +67,7 @@ function Update(event: Event): Promise<Event | AWS.AWSError> {
   });
 }
 
-function updateDocument(event: Event): Promise<Event | AWS.AWSError> {
+function updateDocument(event: Event): Promise<Event> {
   logger.info(
     `Attempting to update SSM document ${event.ResourceProperties.Name}`
   );
@@ -106,7 +106,7 @@ function updateDocument(event: Event): Promise<Event | AWS.AWSError> {
   });
 }
 
-function updateDocumentAddTags(event: Event): Promise<Event | AWS.AWSError> {
+function updateDocumentAddTags(event: Event): Promise<Event> {
   logger.info(
     `Attempting to update tags for SSM document ${event.ResourceProperties.Name}`
   );
@@ -134,7 +134,7 @@ function updateDocumentAddTags(event: Event): Promise<Event | AWS.AWSError> {
   });
 }
 
-function updateDocumentRemoveTags(event: Event): Promise<Event | AWS.AWSError> {
+function updateDocumentRemoveTags(event: Event): Promise<Event> {
   logger.info(
     `Attempting to remove some tags for SSM document ${event.ResourceProperties.Name}`
   );
@@ -169,9 +169,7 @@ function updateDocumentRemoveTags(event: Event): Promise<Event | AWS.AWSError> {
   });
 }
 
-function updateDocumentDefaultVersion(
-  event: Event
-): Promise<Event | AWS.AWSError> {
+function updateDocumentDefaultVersion(event: Event): Promise<Event> {
   logger.info(
     `Attempting to update default version for SSM document ${event.ResourceProperties.Name}`
   );
@@ -209,7 +207,7 @@ function updateDocumentDefaultVersion(
   });
 }
 
-function Delete(event: any): Promise<Event | AWS.AWSError> {
+function Delete(event: any): Promise<Event> {
   logger.info(
     `Attempting to delete SSM document ${event.ResourceProperties.Name}`
   );
