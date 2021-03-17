@@ -1,0 +1,13 @@
+---
+schemaVersion: "2.2"
+description: Echo Hello World!
+mainSteps:
+  - name: echo
+    action: aws:runShellScript
+    inputs:
+      runCommand:
+        - echo "Hello World"
+    precondition:
+      StringEquals:
+        - platformType
+        - Linux

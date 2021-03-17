@@ -1,0 +1,22 @@
+---
+schemaVersion: "2.2"
+description: Echo Hello World!
+parameters:
+  text:
+    type: String
+    description: Text to echo
+    default: Hello World!
+  yesOrNo:
+    type: Boolean
+    description: Kill all humans
+    default: true
+mainSteps:
+  - name: echo
+    action: aws:runShellScript
+    inputs:
+      runCommand:
+        - echo "{{text}}"
+    precondition:
+      StringEquals:
+        - platformType
+        - Linux
