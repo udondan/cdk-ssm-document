@@ -295,6 +295,6 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
    [PyPI]: https://pypi.org/project/cdk-ssm-document/
    [NuGet]: https://www.nuget.org/packages/CDK.SSM.Document/
-   [docs]: https://awscdk.io/packages/cdk-ssm-document@2.1.0
+   [docs]: https://awscdk.io/packages/cdk-ssm-document@2.1.1
    [source]: https://github.com/udondan/cdk-ssm-document
    [license]: https://github.com/udondan/cdk-ssm-document/blob/master/LICENSE
