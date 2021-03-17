@@ -1,0 +1,17 @@
+---
+description: Custom Automation Backup and Recovery Sample
+schemaVersion: "0.3"
+mainSteps:
+  - name: createImage
+    action: aws:executeAwsApi
+    onFailure: Abort
+    inputs:
+      Service: ec2
+      Api: CreateImage
+      InstanceId: i-1234567890
+      Name: Image
+      NoReboot: false
+    outputs:
+      - Name: newImageId
+        Selector: "$.ImageId"
+        Type: String

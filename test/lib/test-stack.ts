@@ -8,20 +8,33 @@ export class TestStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    let file = path.join(__dirname, '../documents/hello-world-yaml.yml');
-    new Document(this, 'SSM-Document-HelloWorld-Yaml', {
-      name: 'HelloWorld-from-yaml-file',
+    let file = path.join(
+      __dirname,
+      '../documents/command/hello-world-yaml.yml'
+    );
+    const docA = new Document(this, 'SSM-Document-HelloWorld-Yaml', {
+      name: `${this.stackName}-HelloWorld-from-yaml-file`,
       content: fs.readFileSync(file).toString(),
     });
 
-    file = path.join(__dirname, '../documents/hello-world-json.json');
-    new Document(this, 'SSM-Document-HelloWorld-Json', {
-      name: 'HelloWorld-from-json-file',
+    file = path.join(__dirname, '../documents/command/hello-world-json.json');
+    const docB = new Document(this, 'SSM-Document-HelloWorld-Json', {
+      name: `${this.stackName}-HelloWorld-from-json-file`,
       content: fs.readFileSync(file).toString(),
     });
 
-    new Document(this, 'SSM-Document-HelloWorld-Inline', {
-      name: 'HelloWorld-from-inline',
+    file = path.join(
+      __dirname,
+      '../documents/automation/automation-document.yml'
+    );
+    const docC = new Document(this, `SSM-Document-Automation`, {
+      documentType: 'Automation',
+      name: 'Test-Automation',
+      content: fs.readFileSync(file).toString(),
+    });
+
+    const docD = new Document(this, 'SSM-Document-HelloWorld-Inline', {
+      name: `${this.stackName}-HelloWorld-from-inline`,
       content: {
         schemaVersion: '2.2',
         description: 'Echo Hello World!',
@@ -47,18 +60,27 @@ export class TestStack extends cdk.Stack {
       },
     });
 
-    const dir = path.join(__dirname, '../documents');
+    docD.node.addDependency(docC);
+    docC.node.addDependency(docB);
+    docB.node.addDependency(docA);
+
+    const dir = path.join(__dirname, '../documents/command');
     const files = fs.readdirSync(dir);
 
+    var last: Document | undefined = undefined;
     for (const i in files) {
       const name = files[i];
       const shortName = name.split('.').slice(0, -1).join('.'); // removes file extension
       const file = `${dir}/${name}`;
 
-      new Document(this, `SSM-Document-Loop-${shortName}`, {
-        name: shortName,
+      const doc = new Document(this, `SSM-Document-Loop-${shortName}`, {
+        name: `${this.stackName}-${shortName}`,
         content: fs.readFileSync(file).toString(),
       });
+      if (typeof last !== 'undefined') {
+        last.node.addDependency(doc);
+      }
+      last = doc;
     }
   }
 }
