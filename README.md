@@ -55,15 +55,15 @@ import fs = require('fs');
 import path = require('path');
 
 export class TestStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
-        super(scope, id, props);
+  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+    super(scope, id, props);
 
-        const file = path.join(__dirname, '../documents/hello-world.yml');
-        new Document(this, 'SSM-Document-HelloWorld', {
-            name: 'HelloWorld',
-            content: fs.readFileSync(file).toString(),
-        });
-    }
+    const file = path.join(__dirname, '../documents/hello-world.yml');
+    new Document(this, 'SSM-Document-HelloWorld', {
+      name: 'HelloWorld',
+      content: fs.readFileSync(file).toString(),
+    });
+  }
 }
 ```
 
@@ -76,41 +76,36 @@ import fs = require('fs');
 import path = require('path');
 
 export class TestStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
-        super(scope, id, props);
+  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+    super(scope, id, props);
 
-        new Document(this, 'SSM-Document-HelloWorld', {
-            name: 'HelloWorld',
-            content: {
-                schemaVersion: '2.2',
-                description: 'Echo Hello World!',
-                parameters: {
-                    text: {
-                        default: 'Hello World!',
-                        description: 'Text to echo',
-                        type: 'String',
-                    },
-                },
-                mainSteps: [
-                    {
-                        name: 'echo',
-                        action: 'aws:runShellScript',
-                        inputs: {
-                            runCommand: [
-                                'echo "{{text}}"',
-                            ],
-                        },
-                        precondition: {
-                            StringEquals: [
-                                'platformType',
-                                'Linux',
-                            ],
-                        },
-                    },
-                ],
+    new Document(this, 'SSM-Document-HelloWorld', {
+      name: 'HelloWorld',
+      content: {
+        schemaVersion: '2.2',
+        description: 'Echo Hello World!',
+        parameters: {
+          text: {
+            default: 'Hello World!',
+            description: 'Text to echo',
+            type: 'String',
+          },
+        },
+        mainSteps: [
+          {
+            name: 'echo',
+            action: 'aws:runShellScript',
+            inputs: {
+              runCommand: ['echo "{{text}}"'],
             },
-        });
-    }
+            precondition: {
+              StringEquals: ['platformType', 'Linux'],
+            },
+          },
+        ],
+      },
+    });
+  }
 }
 ```
 
@@ -123,23 +118,49 @@ import fs = require('fs');
 import path = require('path');
 
 export class TestStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
-        super(scope, id, props);
+  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+    super(scope, id, props);
 
-        const dir = path.join(__dirname, '../documents');
-        const files = fs.readdirSync(dir);
+    const dir = path.join(__dirname, '../documents');
+    const files = fs.readdirSync(dir);
 
-        for (const i in files) {
-            const name = files[i];
-            const shortName = name.split('.').slice(0, -1).join('.'); // removes file extension
-            const file = `${dir}/${name}`;
+    for (const i in files) {
+      const name = files[i];
+      const shortName = name.split('.').slice(0, -1).join('.'); // removes file extension
+      const file = `${dir}/${name}`;
 
-            new Document(this, `SSM-Document-${shortName}`, {
-                name: shortName,
-                content: fs.readFileSync(file).toString(),
-            });
-        }
+      new Document(this, `SSM-Document-${shortName}`, {
+        name: shortName,
+        content: fs.readFileSync(file).toString(),
+      });
     }
+  }
+}
+```
+
+## Deploying many documents in a single stack
+
+When you want to create multiple documents in the same stack, you will quickly exceed the SSM API rate limit. One ugly but working solution for this is to ensure that only a single document is created/updated at a time by adding resource dependencies. When document C depends on document B and B depends on document A, the documents will be created/updated in that order.
+
+```typescript
+const docA = new Document(this, 'doc-A', {...})
+const docB = new Document(this, 'doc-B', {...})
+const docC = new Document(this, 'doc-C', {...})
+
+docC.node.addDependency(docB);
+docB.node.addDependency(docA);
+```
+
+When looping through a directory of documents it could look like this:
+
+```typescript
+var last: Document | undefined = undefined;
+for (const i in files) {
+  const doc = new Document(this, `SSM-Document-${shortName}`, {...});
+  if (typeof last !== 'undefined') {
+    last.node.addDependency(doc);
+  }
+  last = doc;
 }
 ```
 
