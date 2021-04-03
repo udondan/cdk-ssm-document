@@ -11,6 +11,15 @@ interface DocumentEvent extends LambdaEvent {
           default?: any;
         };
       };
+      mainSteps?: [
+        {
+          name: string;
+          action: string;
+          inputs: {
+            [key: string]: any;
+          };
+        }
+      ];
     };
   };
 }
@@ -291,16 +300,36 @@ function missingTags(newTags: AWS.SSM.TagList) {
  * @returns DocumentEvent
  */
 function fixBooleanParameters(event: DocumentEvent) {
-  if (typeof event.ResourceProperties.Content.parameters !== 'object') {
-    return event;
-  }
-  for (let [key, param] of Object.entries(
-    event.ResourceProperties.Content.parameters
-  )) {
-    if (param.type == 'Boolean' && 'default' in param) {
-      event.ResourceProperties.Content.parameters[key].default =
-        param.default == 'true';
+  // fixing Boolean input parameters
+  if (typeof event.ResourceProperties.Content.parameters == 'object') {
+    for (let [key, param] of Object.entries(
+      event.ResourceProperties.Content.parameters
+    )) {
+      if (param.type == 'Boolean' && 'default' in param) {
+        event.ResourceProperties.Content.parameters[key].default =
+          param.default == 'true';
+      }
     }
   }
+
+  // fixing BooleanEquals in aws:branch https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-action-branch.html
+  if (Array.isArray(event.ResourceProperties.Content.mainSteps)) {
+    event.ResourceProperties.Content.mainSteps.forEach((step, i) => {
+      if (
+        step.action == 'aws:branch' &&
+        'Choices' in step.inputs &&
+        Array.isArray(step.inputs.Choices)
+      ) {
+        step.inputs.Choices.forEach((choice, j) => {
+          if ('BooleanEquals' in choice) {
+            event.ResourceProperties.Content.mainSteps[i].inputs.Choices[
+              j
+            ].BooleanEquals = choice.BooleanEquals == 'true';
+          }
+        });
+      }
+    });
+  }
+
   return event;
 }
