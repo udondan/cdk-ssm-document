@@ -206,6 +206,7 @@ export class Document extends Construct implements cdk.ITaggable {
           produce: () => this.tags.renderTags(),
         }),
       },
+      pascalCaseProperties: true,
     });
 
     this.name = document.getAttString('Name');

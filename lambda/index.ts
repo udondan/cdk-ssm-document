@@ -97,9 +97,9 @@ function updateDocument(event: Event): Promise<Event> {
   return new Promise(function (resolve, reject) {
     if (
       JSON.stringify(event.ResourceProperties.Content) ==
-        JSON.stringify(event.OldResourceProperties.Content) &&
-      (event.ResourceProperties.targetType || defaultTargetType) ==
-        (event.OldResourceProperties.targetType || defaultTargetType)
+      JSON.stringify(event.OldResourceProperties.Content) &&
+      (event.ResourceProperties.TargetType || defaultTargetType) ==
+      (event.OldResourceProperties.TargetType || defaultTargetType)
     ) {
       logger.info(
         `No changes detected on document ${event.ResourceProperties.Name} itself`
@@ -110,7 +110,7 @@ function updateDocument(event: Event): Promise<Event> {
       {
         Name: event.ResourceProperties.Name,
         Content: JSON.stringify(event.ResourceProperties.Content),
-        TargetType: event.ResourceProperties.targetType || defaultTargetType,
+        TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         DocumentVersion: '$LATEST',
       },
       function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
