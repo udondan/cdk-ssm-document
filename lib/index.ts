@@ -1,7 +1,7 @@
-import cfn = require('@aws-cdk/aws-cloudformation');
-import iam = require('@aws-cdk/aws-iam');
-import lambda = require('@aws-cdk/aws-lambda');
-import cdk = require('@aws-cdk/core');
+import { Construct } from 'constructs';
+import cdk = require('aws-cdk-lib');
+import lambda = require('aws-cdk-lib/aws-lambda');
+import iam = require('aws-cdk-lib/aws-iam');
 import * as statement from 'cdk-iam-floyd';
 import yaml = require('js-yaml');
 import path = require('path');
@@ -150,7 +150,7 @@ export interface DocumentProps extends cdk.StackProps {
 /**
  * An SSM document
  */
-export class Document extends cdk.Construct implements cdk.ITaggable {
+export class Document extends Construct implements cdk.ITaggable {
   /**
    * Name of the document
    */
@@ -169,7 +169,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
   /**
    * Defines a new SSM document
    */
-  constructor(scope: cdk.Construct, id: string, props: DocumentProps) {
+  constructor(scope: Construct, id: string, props: DocumentProps) {
     super(scope, id);
 
     this.tags = new cdk.TagManager(cdk.TagType.MAP, 'Custom::SSM-Document');
@@ -180,7 +180,7 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
     const name = this.fixDocumentName(props.name);
 
     if (name.length < 3 || name.length > 128) {
-      this.node.addError(
+      cdk.Annotations.of(this).addError(
         `SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`
       );
       return;
@@ -192,8 +192,8 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
       content = yaml.safeLoad(content) as DocumentContent;
     }
 
-    const document = new cfn.CustomResource(this, `SSM-Document-${name}`, {
-      provider: cfn.CustomResourceProvider.fromLambda(this.lambda),
+    const document = new cdk.CustomResource(this, `SSM-Document-${name}`, {
+      serviceToken: this.lambda.functionArn,
       resourceType: resourceType,
       properties: {
         updateDefaultVersion: props.updateDefaultVersion || true,
@@ -202,10 +202,11 @@ export class Document extends cdk.Construct implements cdk.ITaggable {
         documentType: props.documentType || 'Command',
         targetType: props.targetType || '/',
         StackName: stack,
-        tags: cdk.Lazy.anyValue({
+        tags: cdk.Lazy.any({
           produce: () => this.tags.renderTags(),
         }),
       },
+      pascalCaseProperties: true,
     });
 
     this.name = document.getAttString('Name');
