@@ -1,8 +1,8 @@
-import { Construct } from 'constructs';
 import cdk = require('aws-cdk-lib');
-import lambda = require('aws-cdk-lib/aws-lambda');
 import iam = require('aws-cdk-lib/aws-iam');
+import lambda = require('aws-cdk-lib/aws-lambda');
 import * as statement from 'cdk-iam-floyd';
+import { Construct } from 'constructs';
 import yaml = require('js-yaml');
 import path = require('path');
 

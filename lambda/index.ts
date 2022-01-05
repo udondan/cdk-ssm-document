@@ -97,9 +97,9 @@ function updateDocument(event: Event): Promise<Event> {
   return new Promise(function (resolve, reject) {
     if (
       JSON.stringify(event.ResourceProperties.Content) ==
-      JSON.stringify(event.OldResourceProperties.Content) &&
+        JSON.stringify(event.OldResourceProperties.Content) &&
       (event.ResourceProperties.TargetType || defaultTargetType) ==
-      (event.OldResourceProperties.TargetType || defaultTargetType)
+        (event.OldResourceProperties.TargetType || defaultTargetType)
     ) {
       logger.info(
         `No changes detected on document ${event.ResourceProperties.Name} itself`
