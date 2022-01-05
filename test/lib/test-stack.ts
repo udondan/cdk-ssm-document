@@ -1,5 +1,5 @@
-import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
 

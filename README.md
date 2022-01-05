@@ -3,16 +3,14 @@
 [![Source](https://img.shields.io/badge/Source-GitHub-blue?logo=github)][source]
 [![Test](https://github.com/udondan/cdk-ssm-document/workflows/Test/badge.svg)](https://github.com/udondan/cdk-ssm-document/actions?query=workflow%3ATest)
 [![GitHub](https://img.shields.io/github/license/udondan/cdk-ssm-document)][license]
-[![Docs](https://img.shields.io/badge/awscdk.io-cdk--ssm--document-orange)][docs]
+[![Docs](https://img.shields.io/badge/Construct%20Hub-cdk--ssm--document-orange)][docs]
 
 [![npm package](https://img.shields.io/npm/v/cdk-ssm-document?color=brightgreen)][npm]
 [![PyPI package](https://img.shields.io/pypi/v/cdk-ssm-document?color=brightgreen)][PyPI]
-[![NuGet package](https://img.shields.io/nuget/v/CDK.SSM.Document?color=brightgreen)][NuGet]
 
 ![Downloads](https://img.shields.io/badge/-DOWNLOADS:-brightgreen?color=gray)
 [![npm](https://img.shields.io/npm/dt/cdk-ssm-document?label=npm&color=blueviolet)][npm]
 [![PyPI](https://img.shields.io/pypi/dm/cdk-ssm-document?label=pypi&color=blueviolet)][PyPI]
-[![NuGet](https://img.shields.io/nuget/dt/CDK.SSM.Document?label=nuget&color=blueviolet)][NuGet]
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
@@ -30,32 +28,31 @@ This construct provides document support in a way you'd expect it:
 
 This package has peer dependencies, which need to be installed along in the expected version.
 
-For TypeScript/NodeJS, add these to your `dependencies` in `package.json`:
+For TypeScript/NodeJS, add these to your `dependencies` in `package.json`. For Python, add these to your `requirements.txt`:
 
 - cdk-ssm-document
-- @aws-cdk/aws-cloudformation
-- @aws-cdk/aws-iam
-- @aws-cdk/aws-lambda
+- aws-cdk-lib (^2.0.0)
+- cdk-iam-floyd (^0.300.0)
+- constructs (^10.0.0)
 
-For Python, add these to your `requirements.txt`:
+## CDK compatibility
 
-- cdk-ssm-document
-- aws-cdk.aws-cloudformation
-- aws-cdk.aws-iam
-- aws-cdk.aws-lambda
+- Version 3.x is compatible with the CDK v2.
+- Version 2.x is compatible with the CDK v1. There won't be regular updates for this.
 
 ## Usage
 
 ### Creating a document from a YAML or JSON file
 
 ```typescript
-import cdk = require('@aws-cdk/core');
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { Document } from 'cdk-ssm-document';
 import fs = require('fs');
 import path = require('path');
 
 export class TestStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
     const file = path.join(__dirname, '../documents/hello-world.yml');
@@ -70,13 +67,14 @@ export class TestStack extends cdk.Stack {
 ### Creating a document via inline definition
 
 ```typescript
-import cdk = require('@aws-cdk/core');
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { Document } from 'cdk-ssm-document';
 import fs = require('fs');
 import path = require('path');
 
 export class TestStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
     new Document(this, 'SSM-Document-HelloWorld', {
@@ -112,7 +110,8 @@ export class TestStack extends cdk.Stack {
 ### Deploy all YAML/JSON files from a directory
 
 ```typescript
-import cdk = require('@aws-cdk/core');
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { Document } from 'cdk-ssm-document';
 import fs = require('fs');
 import path = require('path');
@@ -294,7 +293,6 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
    [custom resource]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
    [PyPI]: https://pypi.org/project/cdk-ssm-document/
-   [NuGet]: https://www.nuget.org/packages/CDK.SSM.Document/
-   [docs]: https://awscdk.io/packages/cdk-ssm-document@2.2.1
+   [docs]: https://constructs.dev/packages/cdk-ssm-document
    [source]: https://github.com/udondan/cdk-ssm-document
    [license]: https://github.com/udondan/cdk-ssm-document/blob/master/LICENSE
