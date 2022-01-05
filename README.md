@@ -7,12 +7,10 @@
 
 [![npm package](https://img.shields.io/npm/v/cdk-ssm-document?color=brightgreen)][npm]
 [![PyPI package](https://img.shields.io/pypi/v/cdk-ssm-document?color=brightgreen)][PyPI]
-[![NuGet package](https://img.shields.io/nuget/v/CDK.SSM.Document?color=brightgreen)][NuGet]
 
 ![Downloads](https://img.shields.io/badge/-DOWNLOADS:-brightgreen?color=gray)
 [![npm](https://img.shields.io/npm/dt/cdk-ssm-document?label=npm&color=blueviolet)][npm]
 [![PyPI](https://img.shields.io/pypi/dm/cdk-ssm-document?label=pypi&color=blueviolet)][PyPI]
-[![NuGet](https://img.shields.io/nuget/dt/CDK.SSM.Document?label=nuget&color=blueviolet)][NuGet]
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
@@ -294,7 +292,6 @@ If you're still not convinced to use the [AWS CDK], you can still use the Lambda
    [custom resource]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html
    [npm]: https://www.npmjs.com/package/cdk-ssm-document
    [PyPI]: https://pypi.org/project/cdk-ssm-document/
-   [NuGet]: https://www.nuget.org/packages/CDK.SSM.Document/
    [docs]: https://awscdk.io/packages/cdk-ssm-document@2.2.1
    [source]: https://github.com/udondan/cdk-ssm-document
    [license]: https://github.com/udondan/cdk-ssm-document/blob/master/LICENSE

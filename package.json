@@ -49,10 +49,6 @@
       "python": {
         "distName": "cdk-ssm-document",
         "module": "cdk_ssm_document"
-      },
-      "dotnet": {
-        "namespace": "CDK.SSM.Document",
-        "packageId": "CDK.SSM.Document"
       }
     }
   },
