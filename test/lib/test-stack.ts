@@ -2,15 +2,12 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as statement from 'cdk-iam-floyd';
 
 import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
 
-
-import { Document, AttachmentSource } from '../../lib';
-import { Iam } from 'cdk-iam-floyd';
+import { Document } from '../../lib';
 
 export class TestStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -124,11 +121,14 @@ export class TestStack extends cdk.Stack {
     docE.lambda.role?.attachInlinePolicy(
       new iam.Policy(this, 'distributor-s3-bucket-read', {
         statements: [
-          new statement.S3()
-            .allow()
-            .toGetObject()
-            .onBucket(bucketName)
-            .onObject(bucketName, "*")
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ['s3:GetObject'],
+            resources: [
+              `arn:aws:s3:::${bucketName}`,
+              `arn:aws:s3:::${bucketName}/*`
+            ],
+          }),
         ]
       })
     )
