@@ -56,7 +56,7 @@ function Create(event: Event): Promise<Event> {
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         Tags: makeTags(event, event.ResourceProperties),
         VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments)
+        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || [])
       },
       function (err: AWS.AWSError, data: AWS.SSM.CreateDocumentResult) {
         if (err) {
@@ -119,7 +119,7 @@ function updateDocument(event: Event): Promise<Event> {
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         DocumentVersion: '$LATEST',
         VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments)
+        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || [])
       },
       function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
         if (err && err.code == 'DuplicateDocumentContent') {
