@@ -176,6 +176,16 @@ export interface DocumentProps extends cdk.StackProps {
    * Content of the SSM document. Can be passed as string or as object
    */
   readonly content: string | DocumentContent;
+
+  /**
+   * A list of key-value pairs that describe attachments to a version of a document.
+   */
+  readonly attachments?: AttachmentSource[];
+
+  /**
+   * An optional field specifying the version of the artifact you are creating with the document. For example, "Release 12, Update 6". This value is unique across all versions of a document, and can't be changed.
+   */
+  readonly versionName?: string;
 }
 
 /**
@@ -233,6 +243,7 @@ export class Document extends Construct implements cdk.ITaggable {
         documentType: props.documentType || 'Command',
         targetType: props.targetType || '/',
         attachments: props.attachments,
+        versionName: props.versionName,
         StackName: stack,
         tags: cdk.Lazy.any({
           produce: () => this.tags.renderTags(),

@@ -55,6 +55,7 @@ function Create(event: Event): Promise<Event> {
         DocumentType: event.ResourceProperties.DocumentType,
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         Tags: makeTags(event, event.ResourceProperties),
+        VersionName: event.ResourceProperties.VersionName,
         Attachments: pascalizeKeys(event.ResourceProperties.Attachments)
       },
       function (err: AWS.AWSError, data: AWS.SSM.CreateDocumentResult) {
@@ -102,7 +103,9 @@ function updateDocument(event: Event): Promise<Event> {
       JSON.stringify(event.ResourceProperties.Attachments) ==
       JSON.stringify(event.OldResourceProperties.Attachments) &&
       (event.ResourceProperties.TargetType || defaultTargetType) ==
-      (event.OldResourceProperties.TargetType || defaultTargetType)
+      (event.OldResourceProperties.TargetType || defaultTargetType) &&
+      (event.ResourceProperties.VersionName) ==
+      (event.OldResourceProperties.VersionName)
     ) {
       logger.info(
         `No changes detected on document ${event.ResourceProperties.Name} itself`
@@ -115,6 +118,7 @@ function updateDocument(event: Event): Promise<Event> {
         Content: JSON.stringify(event.ResourceProperties.Content),
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         DocumentVersion: '$LATEST',
+        VersionName: event.ResourceProperties.VersionName,
         Attachments: pascalizeKeys(event.ResourceProperties.Attachments)
       },
       function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
