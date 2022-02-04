@@ -1,0 +1,22 @@
+{
+  "files": {
+    "package.zip": {
+      "checksums": {
+        "sha256": "7a8feee92ba9e75c924ca89db4d9fa0d205693b43e6205782be9f46f258167be"
+      }
+    }
+  },
+  "publisher": "test-cdk-ssm-document",
+  "schemaVersion": "2.0",
+  "description": "doing 1.0 things",
+  "packages": {
+    "_any": {
+      "_any": {
+        "x86_64": {
+          "file": "package.zip"
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
