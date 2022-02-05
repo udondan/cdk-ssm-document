@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as statement from 'cdk-iam-floyd';
 import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
@@ -115,19 +115,12 @@ export class TestStack extends cdk.Stack {
      * s3 files that make up a distribution. Since that is the lambda in this
      * case we must give it `GetObject` permissions before they will can become `Active`.
      */
-    docE.lambda.role?.attachInlinePolicy(
-      new iam.Policy(this, 'distributor-s3-bucket-read', {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ['s3:GetObject'],
-            resources: [
-              `arn:aws:s3:::${bucketName}`,
-              `arn:aws:s3:::${bucketName}/*`,
-            ],
-          }),
-        ],
-      })
+    docE.lambda.role?.addToPrincipalPolicy(
+      new statement.S3()
+        .allow()
+        .toGetObject()
+        .onBucket(bucket.bucketName)
+        .onObject(bucket.bucketName, '*')
     );
 
     docE.node.addDependency(docD);
