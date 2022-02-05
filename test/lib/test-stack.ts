@@ -88,8 +88,8 @@ export class TestStack extends cdk.Stack {
     );
 
     let attachments: { [key: string]: any } = {};
-    const attachmentMode = 'init'; // change this value to simulate an update
-    if (attachmentMode === 'init') {
+    // flip this condition to simulate an update
+    if (true) {
       file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
       attachments = {
         versionName: '1.0-Custom-Name',
