@@ -1,4 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as statement from 'cdk-iam-floyd';
 import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
@@ -8,7 +11,6 @@ import { Document } from '../../lib';
 export class TestStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
     let file = path.join(
       __dirname,
       '../documents/command/hello-world-yaml.yml'
@@ -61,6 +63,68 @@ export class TestStack extends cdk.Stack {
       },
     });
 
+    /**
+     * Distributor example.
+     *
+     * Requires a bucket to hold install/update/uninstall scripts.
+     */
+    const bucketName = `${cdk.Stack.of(this).account}-cdk-ssm-document-storage`;
+    const bucket = new s3.Bucket(this, 'DistributorPackages', {
+      bucketName: bucketName,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      encryption: s3.BucketEncryption.KMS_MANAGED,
+      // Makes for easy destroy and rerun of this stack over and over.
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+    const packageDeploy = new s3deploy.BucketDeployment(
+      this,
+      'distribution-packages',
+      {
+        sources: [s3deploy.Source.asset('../test/documents/distributor')],
+        destinationBucket: bucket,
+      }
+    );
+
+    let attachments: { [key: string]: any } = {};
+    // flip this condition to test an attachment update
+    if (true) {
+      file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
+      attachments = {
+        versionName: '1.0-Custom-Name',
+        attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v1`] }],
+      };
+    } else {
+      file = path.join(__dirname, '../documents/distributor/v2/manifest.json');
+      attachments = {
+        versionName: '2.0-Better-Than_Sliced_Bread',
+        attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v2`] }],
+      };
+    }
+
+    const docE = new Document(this, `SSM-Distribution-Package`, {
+      documentType: 'Package',
+      name: 'Test-Distribution-Package',
+      content: fs.readFileSync(file).toString(),
+      ...attachments,
+    });
+
+    /**
+     * The owner/creator of the document must have read access to the
+     * s3 files that make up a distribution. Since that is the lambda in this
+     * case we must give it `GetObject` permissions before they will can become
+     * `Active`.
+     */
+    docE.lambda.role?.addToPrincipalPolicy(
+      new statement.S3() //
+        .allow()
+        .toGetObject()
+        .onObject(bucket.bucketName, '*')
+    );
+
+    docE.node.addDependency(docD);
+    docE.node.addDependency(packageDeploy);
     docD.node.addDependency(docC);
     docC.node.addDependency(docB);
     docB.node.addDependency(docA);

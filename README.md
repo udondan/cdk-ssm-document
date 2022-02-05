@@ -137,6 +137,72 @@ export class TestStack extends cdk.Stack {
 }
 ```
 
+### Creating a distributor package
+
+```typescript
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { Document } from 'cdk-ssm-document';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as statement from 'cdk-iam-floyd';
+import fs = require('fs');
+import path = require('path');
+
+
+export class TestStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+    super(scope, id, props);
+
+    const bucketName = `${cdk.Stack.of(this).account}-cdk-ssm-document-storage`;
+    const bucket = new s3.Bucket(this, 'DistributorPackages', {
+      bucketName: bucketName,
+    });
+    const packageDeploy = new s3deploy.BucketDeployment(this, 'distribution-packages', {
+      sources: [s3deploy.Source.asset('../location/to/distributor/packages')],
+      destinationBucket: bucket
+    });
+
+    file = path.join(
+      __dirname,
+      '../location/to/distributor/packages/v1/manifest.json'
+    );
+    const docE = new Document(this, `SSM-Distribution-Package`, {
+      documentType: 'Package',
+      name: 'Test-Distribution-Package',
+      content: fs.readFileSync(file).toString(),
+      versionName: '1.0-Custom-Name',
+      attachments: [
+        { key: "SourceUrl", values: [`s3://${bucketName}/v1`] }
+      ]
+    });
+
+    /**
+     * The owner/creator of the document must have read access to the
+     * s3 files that make up a distribution. Since that is the lambda in this
+     * case we must give it `GetObject` permissions before they will can become `Active`.
+     *
+     * If access is not granted to the role that created the document you may see
+     * an error like the following :
+     *
+     * ```
+     * Permanent download error: Source URL 's3://cdk-ssm-document-storage/v1/package.zip' reported:
+     * Access Denied (Service: Amazon S3; Status Code: 403;
+     * Error Code: AccessDenied; Request  *ID:DES1XEHZTJ9R; S3 Extended Request ID:
+     * A+u8sTGQ6bZpAwl2eXDLq4KTkoeYyQR2XEV+I=; Proxy: null)
+     * ```
+     */
+    doc.lambda.role?.addToPrincipalPolicy(
+      new statement.S3() //
+        .allow()
+        .toGetObject()
+        .onObject(bucket.bucketName, '*')
+    );
+    doc.node.addDependency(packageDeploy);
+  }
+}
+```
+
 ## Deploying many documents in a single stack
 
 When you want to create multiple documents in the same stack, you will quickly exceed the SSM API rate limit. One ugly but working solution for this is to ensure that only a single document is created/updated at a time by adding resource dependencies. When document C depends on document B and B depends on document A, the documents will be created/updated in that order.
