@@ -88,7 +88,7 @@ export class TestStack extends cdk.Stack {
     );
 
     let attachments: { [key: string]: any } = {};
-    // flip this condition to simulate an update
+    // flip this condition to test an attachment update
     if (true) {
       file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
       attachments = {
@@ -113,13 +113,13 @@ export class TestStack extends cdk.Stack {
     /**
      * The owner/creator of the document must have read access to the
      * s3 files that make up a distribution. Since that is the lambda in this
-     * case we must give it `GetObject` permissions before they will can become `Active`.
+     * case we must give it `GetObject` permissions before they will can become
+     * `Active`.
      */
     docE.lambda.role?.addToPrincipalPolicy(
-      new statement.S3()
+      new statement.S3() //
         .allow()
         .toGetObject()
-        .onBucket(bucket.bucketName)
         .onObject(bucket.bucketName, '*')
     );
 
