@@ -87,29 +87,28 @@ export class TestStack extends cdk.Stack {
       }
     );
 
-    file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
+    let attachments: { [key: string]: any } = {};
+    const attachmentMode = 'init'; // change this value to simulate an update
+    if (attachmentMode === 'init') {
+      file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
+      attachments = {
+        versionName: '1.0-Custom-Name',
+        attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v1`] }],
+      };
+    } else {
+      file = path.join(__dirname, '../documents/distributor/v2/manifest.json');
+      attachments = {
+        versionName: '2.0-Better-Than_Sliced_Bread',
+        attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v2`] }],
+      };
+    }
+
     const docE = new Document(this, `SSM-Distribution-Package`, {
       documentType: 'Package',
       name: 'Test-Distribution-Package',
       content: fs.readFileSync(file).toString(),
-      versionName: '1.0-Custom-Name',
-      attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v1`] }],
+      ...attachments,
     });
-
-    // Comment `docE` above and uncomment this to simulate an update.
-    // file = path.join(
-    //   __dirname,
-    //   '../documents/distributor/v2/manifest.json'
-    // );
-    // const docE = new Document(this, `SSM-Distribution-Package`, {
-    //   documentType: 'Package',
-    //   name: 'Test-Distribution-Package',
-    //   content: fs.readFileSync(file).toString(),
-    //   versionName: '2.0-Better-Than_Sliced_Bread',
-    //   attachments: [
-    //     { key: "SourceUrl", values: [`s3://${bucketName}/v2`] }
-    //   ]
-    // });
 
     /**
      * The owner/creator of the document must have read access to the
