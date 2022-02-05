@@ -83,7 +83,7 @@ export interface AttachmentSource {
   /**
    * The key of a key-value pair that identifies the location of an attachment to a document.
    */
-  readonly key?: "SourceUrl" | "S3FileUrl" | "AttachmentReference";
+  readonly key?: 'SourceUrl' | 'S3FileUrl' | 'AttachmentReference';
 
   /**
    * The name of the document attachment file.
@@ -92,7 +92,7 @@ export interface AttachmentSource {
 
   /**
    * The value of a key-value pair that identifies the location of an attachment to a document. The format for Value depends on the type of key you specify.
-   * 
+   *
    * For the key SourceUrl, the value is an S3 bucket location. For example:
    * "Values": [ "s3://doc-example-bucket/my-folder" ]
    * For the key S3FileUrl, the value is a file in an S3 bucket. For example:

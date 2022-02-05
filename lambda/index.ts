@@ -56,7 +56,7 @@ function Create(event: Event): Promise<Event> {
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         Tags: makeTags(event, event.ResourceProperties),
         VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || [])
+        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
       },
       function (err: AWS.AWSError, data: AWS.SSM.CreateDocumentResult) {
         if (err) {
@@ -99,13 +99,13 @@ function updateDocument(event: Event): Promise<Event> {
   return new Promise(function (resolve, reject) {
     if (
       JSON.stringify(event.ResourceProperties.Content) ==
-      JSON.stringify(event.OldResourceProperties.Content) &&
+        JSON.stringify(event.OldResourceProperties.Content) &&
       JSON.stringify(event.ResourceProperties.Attachments) ==
-      JSON.stringify(event.OldResourceProperties.Attachments) &&
+        JSON.stringify(event.OldResourceProperties.Attachments) &&
       (event.ResourceProperties.TargetType || defaultTargetType) ==
-      (event.OldResourceProperties.TargetType || defaultTargetType) &&
-      (event.ResourceProperties.VersionName) ==
-      (event.OldResourceProperties.VersionName)
+        (event.OldResourceProperties.TargetType || defaultTargetType) &&
+      event.ResourceProperties.VersionName ==
+        event.OldResourceProperties.VersionName
     ) {
       logger.info(
         `No changes detected on document ${event.ResourceProperties.Name} itself`
@@ -119,7 +119,7 @@ function updateDocument(event: Event): Promise<Event> {
         TargetType: event.ResourceProperties.TargetType || defaultTargetType,
         DocumentVersion: '$LATEST',
         VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || [])
+        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
       },
       function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
         if (err && err.code == 'DuplicateDocumentContent') {
@@ -166,23 +166,25 @@ function updateDocumentAddTags(event: Event): Promise<Event> {
 }
 
 const pascalizeKeys = (obj): any => {
-  const isObject = o => Object.prototype.toString.apply(o) === '[object Object]'
-  const isArray = o => Object.prototype.toString.apply(o) === '[object Array]'
+  const isObject = (o) =>
+    Object.prototype.toString.apply(o) === '[object Object]';
+  const isArray = (o) =>
+    Object.prototype.toString.apply(o) === '[object Array]';
 
-  let transformedObj = isArray(obj) ? [] : {}
+  let transformedObj = isArray(obj) ? [] : {};
 
   for (let key in obj) {
     // replace the following with any transform function
-    const transformedKey = toPascalCase(key)
+    const transformedKey = toPascalCase(key);
 
     if (isObject(obj[key]) || isArray(obj[key])) {
-      transformedObj[transformedKey] = pascalizeKeys(obj[key])
+      transformedObj[transformedKey] = pascalizeKeys(obj[key]);
     } else {
-      transformedObj[transformedKey] = obj[key]
+      transformedObj[transformedKey] = obj[key];
     }
   }
-  return transformedObj
-}
+  return transformedObj;
+};
 
 function toPascalCase(string) {
   return `${string}`
@@ -192,7 +194,7 @@ function toPascalCase(string) {
       new RegExp(/\s+(.)(\w*)/, 'g'),
       ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`
     )
-    .replace(new RegExp(/\w/), s => s.toUpperCase());
+    .replace(new RegExp(/\w/), (s) => s.toUpperCase());
 }
 
 function updateDocumentRemoveTags(event: Event): Promise<Event> {

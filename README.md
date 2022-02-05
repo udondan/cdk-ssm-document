@@ -138,6 +138,7 @@ export class TestStack extends cdk.Stack {
 ```
 
 ### Creating a distributor package
+
 ```typescript
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
@@ -177,17 +178,17 @@ export class TestStack extends cdk.Stack {
     });
 
     /**
-     * The owner/creator of the document must have read access to the 
+     * The owner/creator of the document must have read access to the
      * s3 files that make up a distribution. Since that is the lambda in this
      * case we must give it `GetObject` permissions before they will can become `Active`.
-     * 
-     * If access is not granted to the role that created the document you may see 
-     * an error like the following : 
-     * 
+     *
+     * If access is not granted to the role that created the document you may see
+     * an error like the following :
+     *
      * ```
      * Permanent download error: Source URL 's3://cdk-ssm-document-storage/v1/package.zip' reported:
-     * Access Denied (Service: Amazon S3; Status Code: 403; 
-     * Error Code: AccessDenied; Request  *ID:DES1XEHZTJ9R; S3 Extended Request ID: 
+     * Access Denied (Service: Amazon S3; Status Code: 403;
+     * Error Code: AccessDenied; Request  *ID:DES1XEHZTJ9R; S3 Extended Request ID:
      * A+u8sTGQ6bZpAwl2eXDLq4KTkoeYyQR2XEV+I=; Proxy: null)
      * ```
      */
@@ -208,7 +209,6 @@ export class TestStack extends cdk.Stack {
     doc.node.addDependency(packageDeploy);
   }
 }
-
 ```
 
 ## Deploying many documents in a single stack
