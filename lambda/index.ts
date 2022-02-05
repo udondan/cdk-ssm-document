@@ -165,10 +165,10 @@ function updateDocumentAddTags(event: Event): Promise<Event> {
   });
 }
 
-const pascalizeKeys = (obj): any => {
-  const isObject = (o) =>
+const pascalizeKeys = (obj: any): any => {
+  const isObject = (o: any) =>
     Object.prototype.toString.apply(o) === '[object Object]';
-  const isArray = (o) =>
+  const isArray = (o: any) =>
     Object.prototype.toString.apply(o) === '[object Array]';
 
   let transformedObj = isArray(obj) ? [] : {};
@@ -186,8 +186,8 @@ const pascalizeKeys = (obj): any => {
   return transformedObj;
 };
 
-function toPascalCase(string) {
-  return `${string}`
+function toPascalCase(string: string) {
+  return string
     .replace(new RegExp(/[-_]+/, 'g'), ' ')
     .replace(new RegExp(/[^\w\s]/, 'g'), '')
     .replace(
