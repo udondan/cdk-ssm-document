@@ -145,7 +145,7 @@ import { Construct } from 'constructs';
 import { Document } from 'cdk-ssm-document';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as iam from 'aws-cdk-lib/aws-iam';
+import * as statement from 'cdk-iam-floyd';
 import fs = require('fs');
 import path = require('path');
 
@@ -192,20 +192,12 @@ export class TestStack extends cdk.Stack {
      * A+u8sTGQ6bZpAwl2eXDLq4KTkoeYyQR2XEV+I=; Proxy: null)
      * ```
      */
-    doc.lambda.role?.attachInlinePolicy(
-      new iam.Policy(this, 'distributor-s3-bucket-read', {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ['s3:GetObject'],
-            resources: [
-              `arn:aws:s3:::${bucketName}`,
-              `arn:aws:s3:::${bucketName}/*`
-            ],
-          }),
-        ]
-      })
-    )
+    doc.lambda.role?.addToPrincipalPolicy(
+      new statement.S3() //
+        .allow()
+        .toGetObject()
+        .onObject(bucket.bucketName, '*')
+    );
     doc.node.addDependency(packageDeploy);
   }
 }
