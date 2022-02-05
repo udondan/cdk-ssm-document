@@ -77,7 +77,7 @@ export interface DocumentMainStep {
 }
 
 /**
- * An SSM document attachemnt source
+ * An SSM document attachment source
  */
 export interface AttachmentSource {
   /**

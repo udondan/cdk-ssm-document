@@ -169,7 +169,7 @@ export class TestStack extends cdk.Stack {
     );
     const docE = new Document(this, `SSM-Distribution-Package`, {
       documentType: 'Package',
-      name: 'Test-Distributon-Package',
+      name: 'Test-Distribution-Package',
       content: fs.readFileSync(file).toString(),
       versionName: '1.0-Custom-Name',
       attachments: [

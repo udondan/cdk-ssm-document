@@ -90,20 +90,20 @@ export class TestStack extends cdk.Stack {
     file = path.join(__dirname, '../documents/distributor/v1/manifest.json');
     const docE = new Document(this, `SSM-Distribution-Package`, {
       documentType: 'Package',
-      name: 'Test-Distributon-Package',
+      name: 'Test-Distribution-Package',
       content: fs.readFileSync(file).toString(),
       versionName: '1.0-Custom-Name',
       attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v1`] }],
     });
 
-    // Comment `docE` above and uncommet this to simulate an update.
+    // Comment `docE` above and uncomment this to simulate an update.
     // file = path.join(
     //   __dirname,
     //   '../documents/distributor/v2/manifest.json'
     // );
     // const docE = new Document(this, `SSM-Distribution-Package`, {
     //   documentType: 'Package',
-    //   name: 'Test-Distributon-Package',
+    //   name: 'Test-Distribution-Package',
     //   content: fs.readFileSync(file).toString(),
     //   versionName: '2.0-Better-Than_Sliced_Bread',
     //   attachments: [
