@@ -13,15 +13,15 @@ build: install lambda
 
 deploy: build
 	@echo Deploying application...
-	@npm run cdk -- deploy --require-approval never
+	@AWS_REGION=us-east-1 npm run cdk -- deploy --require-approval never
 
 diff: build
 	@echo Running diff...
-	@npm run cdk -- diff
+	@AWS_REGION=us-east-1 npm run cdk -- diff
 
 DESTROY: build
 	@echo Destroying application...
-	@npm run cdk -- destroy --force
+	@AWS_REGION=us-east-1 npm run cdk -- destroy --force
 
 lambda:
 	@echo Building Lambda...
