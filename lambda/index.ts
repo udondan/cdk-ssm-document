@@ -1,4 +1,4 @@
-import { CustomResource, Event, LambdaEvent, StandardLogger } from 'aws-cloudformation-custom-resource';
+import { CustomResource, Event, LambdaEvent, LogLevel, StandardLogger } from 'aws-cloudformation-custom-resource';
 import { Callback, Context } from 'aws-lambda';
 import AWS = require('aws-sdk');
 
@@ -25,7 +25,7 @@ interface DocumentEvent extends LambdaEvent {
 }
 
 const ssm = new AWS.SSM();
-const logger = new StandardLogger();
+const logger = new StandardLogger(LogLevel.INFO);
 
 const defaultTargetType = '/';
 var latestVersion: string; // stores the latest version on updates
@@ -36,6 +36,7 @@ export const handler = function (
   callback: Callback
 ) {
   event = fixBooleanParameters(event as DocumentEvent);
+  logger.info(event);
   new CustomResource(event, context, callback, logger)
     .onCreate(Create)
     .onUpdate(Update)
@@ -48,16 +49,20 @@ function Create(event: Event): Promise<Event> {
     `Attempting to create SSM document ${event.ResourceProperties.Name}`
   );
   return new Promise(function (resolve, reject) {
+    const createDocRequest = {
+      Name: event.ResourceProperties.Name,
+      Content: JSON.stringify(event.ResourceProperties.Content),
+      DocumentType: event.ResourceProperties.DocumentType,
+      TargetType: event.ResourceProperties.TargetType || defaultTargetType,
+      Tags: makeTags(event, event.ResourceProperties),
+      VersionName: event.ResourceProperties.VersionName,
+      Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
+    }
+    logger.info("=== CREATE DOC REQUEST ===")
+    logger.info(createDocRequest)
+
     ssm.createDocument(
-      {
-        Name: event.ResourceProperties.Name,
-        Content: JSON.stringify(event.ResourceProperties.Content),
-        DocumentType: event.ResourceProperties.DocumentType,
-        TargetType: event.ResourceProperties.TargetType || defaultTargetType,
-        Tags: makeTags(event, event.ResourceProperties),
-        VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
-      },
+      createDocRequest,
       function (err: AWS.AWSError, data: AWS.SSM.CreateDocumentResult) {
         if (err) {
           reject(err);
@@ -99,28 +104,32 @@ function updateDocument(event: Event): Promise<Event> {
   return new Promise(function (resolve, reject) {
     if (
       JSON.stringify(event.ResourceProperties.Content) ==
-        JSON.stringify(event.OldResourceProperties.Content) &&
+      JSON.stringify(event.OldResourceProperties.Content) &&
       JSON.stringify(event.ResourceProperties.Attachments) ==
-        JSON.stringify(event.OldResourceProperties.Attachments) &&
+      JSON.stringify(event.OldResourceProperties.Attachments) &&
       (event.ResourceProperties.TargetType || defaultTargetType) ==
-        (event.OldResourceProperties.TargetType || defaultTargetType) &&
+      (event.OldResourceProperties.TargetType || defaultTargetType) &&
       event.ResourceProperties.VersionName ==
-        event.OldResourceProperties.VersionName
+      event.OldResourceProperties.VersionName
     ) {
       logger.info(
         `No changes detected on document ${event.ResourceProperties.Name} itself`
       );
       return resolve(event);
     }
+    const updateDocumentRequest = {
+      Name: event.ResourceProperties.Name,
+      Content: JSON.stringify(event.ResourceProperties.Content),
+      TargetType: event.ResourceProperties.TargetType || defaultTargetType,
+      DocumentVersion: '$LATEST',
+      VersionName: event.ResourceProperties.VersionName,
+      Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
+    }
+    logger.info("=== UPDATE DOC REQUEST ===")
+    logger.info(updateDocumentRequest)
+
     ssm.updateDocument(
-      {
-        Name: event.ResourceProperties.Name,
-        Content: JSON.stringify(event.ResourceProperties.Content),
-        TargetType: event.ResourceProperties.TargetType || defaultTargetType,
-        DocumentVersion: '$LATEST',
-        VersionName: event.ResourceProperties.VersionName,
-        Attachments: pascalizeKeys(event.ResourceProperties.Attachments || []),
-      },
+      updateDocumentRequest,
       function (err: AWS.AWSError, data: AWS.SSM.UpdateDocumentResult) {
         if (err && err.code == 'DuplicateDocumentContent') {
           // this is expected in case of a rollback after a failed update
@@ -275,10 +284,13 @@ function Delete(event: any): Promise<Event> {
     `Attempting to delete SSM document ${event.ResourceProperties.Name}`
   );
   return new Promise(function (resolve, reject) {
+    const deleteDocumentRequest = {
+      Name: event.ResourceProperties.Name,
+    }
+    logger.info("=== DELETE DOC REQUEST ===")
+    logger.info(deleteDocumentRequest);
     ssm.deleteDocument(
-      {
-        Name: event.ResourceProperties.Name,
-      },
+      deleteDocumentRequest,
       function (err: AWS.AWSError, data: AWS.SSM.DeleteDocumentResult) {
         if (err) reject(err);
         else resolve(event);
