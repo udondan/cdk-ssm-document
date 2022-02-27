@@ -19,6 +19,11 @@ jobs:
         with:
           node-version: "14"
 
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -31,7 +36,13 @@ jobs:
           chmod 777 $GITHUB_WORKSPACE/lambda --recursive
 
       - name: Deploy
-        run: cd test && make deploy DESTROY
+        run: cd test-python && make deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Destroy
+        run: cd test-python && make DESTROY
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
