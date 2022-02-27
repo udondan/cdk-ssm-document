@@ -1,11 +1,16 @@
 ---
 description: Custom Automation Backup and Recovery Sample
 schemaVersion: "0.3"
+assumeRole: "{{AutomationAssumeRole}}"
 parameters:
   doSomething:
     type: Boolean
     description: Do something
     default: true
+  AutomationAssumeRole:
+    default: ""
+    description: "(Optional) The ARN of the role to run Automations on your behalf."
+    type: "String"
 mainSteps:
   - name: DoSomethingCheck
     action: aws:branch

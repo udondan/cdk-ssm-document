@@ -210,6 +210,11 @@ export interface DocumentContent {
   readonly description?: string;
 
   /**
+   * The ARN of the role that allows Automation to perform the actions on your behalf.
+   */
+  readonly assumeRole?: string;
+
+  /**
    * An object that can include multiple steps (plugins). Steps include one or more actions, an optional precondition, a unique name of the action, and inputs (parameters) for those actions.
    *
    * For more information about documents, including information about creating documents and the differences between schema versions, see https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-plugins.html

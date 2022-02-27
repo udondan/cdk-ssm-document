@@ -109,6 +109,86 @@ export class TestStack extends Stack {
       ...attachments,
     });
 
+    const docF = new Document(this, `SSM-Document-Automation-Inline`, {
+      documentType: 'Automation',
+      name: 'Test-Automation-Inline',
+      content: {
+        schemaVersion: '0.3',
+        assumeRole: "{{AutomationAssumeRole}}",
+        description: 'Echo Hello World!',
+        parameters: {
+          doSomething: {
+            type: "Boolean",
+            description: "Do something",
+            default: 'true'
+          },
+          AutomationAssumeRole: {
+            default: '',
+            description: '(Optional) The ARN of the role to run Automations on your behalf.',
+            type: 'String'
+          }
+        },
+        mainSteps: [
+          {
+            "name": "DoSomethingCheck",
+            "action": "aws:branch",
+            "inputs": {
+              "Choices": [
+                {
+                  "NextStep": "createImage1",
+                  "Variable": "{{ doSomething }}",
+                  "BooleanEquals": true
+                },
+                {
+                  "NextStep": "createImage2",
+                  "Variable": "{{ doSomething }}",
+                  "BooleanEquals": false
+                }
+              ]
+            }
+          },
+          {
+            "name": "createImage1",
+            "action": "aws:executeAwsApi",
+            "onFailure": "Abort",
+            "inputs": {
+              "Service": "ec2",
+              "Api": "CreateImage",
+              "InstanceId": "i-1234567890",
+              "Name": "Image",
+              "NoReboot": false
+            },
+            "outputs": [
+              {
+                "Name": "newImageId",
+                "Selector": "$.ImageId",
+                "Type": "String"
+              }
+            ]
+          },
+          {
+            "name": "createImage2",
+            "action": "aws:executeAwsApi",
+            "onFailure": "Abort",
+            "inputs": {
+              "Service": "ec2",
+              "Api": "CreateImage",
+              "InstanceId": "i-0987654321",
+              "Name": "Image",
+              "NoReboot": false
+            },
+            "outputs": [
+              {
+                "Name": "newImageId",
+                "Selector": "$.ImageId",
+                "Type": "String"
+              }
+            ]
+          }
+        ]
+      }
+    })
+
     /**
      * The owner/creator of the document must have read access to the
      * s3 files that make up a distribution. Since that is the lambda in this
@@ -122,6 +202,7 @@ export class TestStack extends Stack {
       })
     );
 
+    docF.node.addDependency(docE);
     docE.node.addDependency(docD);
     docE.node.addDependency(packageDeploy);
     docD.node.addDependency(docC);
