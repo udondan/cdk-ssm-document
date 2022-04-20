@@ -32,7 +32,6 @@ For TypeScript/NodeJS, add these to your `dependencies` in `package.json`. For P
 
 - cdk-ssm-document
 - aws-cdk-lib (^2.0.0)
-- cdk-iam-floyd (^0.300.0)
 - constructs (^10.0.0)
 
 ## CDK compatibility
@@ -141,14 +140,13 @@ export class TestStack extends cdk.Stack {
 
 ```typescript
 import * as cdk from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { Document } from 'cdk-ssm-document';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as statement from 'cdk-iam-floyd';
 import fs = require('fs');
 import path = require('path');
-
 
 export class TestStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
@@ -193,10 +191,10 @@ export class TestStack extends cdk.Stack {
      * ```
      */
     doc.lambda.role?.addToPrincipalPolicy(
-      new statement.S3() //
-        .allow()
-        .toGetObject()
-        .onObject(bucket.bucketName, '*')
+      new iam.PolicyStatement({
+        actions: ['s3:GetObject'],
+        resources: [`${bucket.arnForObjects('*')}`],
+      })
     );
     doc.node.addDependency(packageDeploy);
   }

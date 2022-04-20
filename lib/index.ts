@@ -1,7 +1,6 @@
 import cdk = require('aws-cdk-lib');
 import iam = require('aws-cdk-lib/aws-iam');
 import lambda = require('aws-cdk-lib/aws-lambda');
-import * as statement from 'cdk-iam-floyd';
 import { Construct } from 'constructs';
 import yaml = require('js-yaml');
 import path = require('path');
@@ -267,24 +266,38 @@ export class Document extends Construct implements cdk.ITaggable {
       managedPolicyName: `${stack.stackName}-${cleanID}`,
       description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
       statements: [
-        new statement.Ssm().allow().toListDocuments().toListTagsForResource(),
-        new statement.Ssm()
-          .allow()
-          .toCreateDocument()
-          .toAddTagsToResource()
-          .ifAwsRequestTag(createdByTag, ID),
-        new statement.Ssm()
-          .allow()
-          .toDeleteDocument()
-          .toDescribeDocument()
-          .toGetDocument()
-          .toListDocumentVersions()
-          .toModifyDocumentPermission()
-          .toUpdateDocument()
-          .toUpdateDocumentDefaultVersion()
-          .toAddTagsToResource()
-          .toRemoveTagsFromResource()
-          .ifResourceTag(createdByTag, ID),
+        new iam.PolicyStatement({
+          actions: ['ssm:ListDocuments', 'ssm:ListTagsForResource'],
+          resources: ['*'],
+        }),
+        new iam.PolicyStatement({
+          actions: ['ssm:AddTagsToResource', 'ssm:CreateDocument'],
+          resources: ['*'],
+          conditions: {
+            StringLike: {
+              'aws:RequestTag/CreatedByCfnCustomResource': ID,
+            },
+          },
+        }),
+        new iam.PolicyStatement({
+          actions: [
+            'ssm:AddTagsToResource',
+            'ssm:DeleteDocument',
+            'ssm:DescribeDocument',
+            'ssm:GetDocument',
+            'ssm:ListDocumentVersions',
+            'ssm:ModifyDocumentPermission',
+            'ssm:RemoveTagsFromResource',
+            'ssm:UpdateDocument',
+            'ssm:UpdateDocumentDefaultVersion',
+          ],
+          resources: ['*'],
+          conditions: {
+            StringLike: {
+              'ssm:ResourceTag/CreatedByCfnCustomResource': ID,
+            },
+          },
+        }),
       ],
     });
 

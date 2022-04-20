@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
-import * as statement from 'cdk-iam-floyd';
 import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
@@ -117,10 +117,10 @@ export class TestStack extends cdk.Stack {
      * `Active`.
      */
     docE.lambda.role?.addToPrincipalPolicy(
-      new statement.S3() //
-        .allow()
-        .toGetObject()
-        .onObject(bucket.bucketName, '*')
+      new iam.PolicyStatement({
+        actions: ['s3:GetObject'],
+        resources: [`${bucket.arnForObjects('*')}`],
+      })
     );
 
     docE.node.addDependency(docD);
