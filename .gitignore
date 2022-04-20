@@ -10,3 +10,4 @@ lambda/*
 **/*.d.ts
 **/cdk.out
 **/package-lock.json
+tsconfig.tsbuildinfo

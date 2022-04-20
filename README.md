@@ -32,7 +32,6 @@ For TypeScript/NodeJS, add these to your `dependencies` in `package.json`. For P
 
 - cdk-ssm-document
 - aws-cdk-lib (^2.0.0)
-- cdk-iam-floyd (^0.300.0)
 - constructs (^10.0.0)
 
 ## CDK compatibility
@@ -140,41 +139,39 @@ export class TestStack extends cdk.Stack {
 ### Creating a distributor package
 
 ```typescript
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import { aws_iam, aws_s3, aws_s3_deployment, Stack, StackProps } from 'aws-cdk-lib';
 import { Document } from 'cdk-ssm-document';
-import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as statement from 'cdk-iam-floyd';
+import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
 
-
-export class TestStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+export class TestStack extends Stack {
+  constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
 
-    const bucketName = `${cdk.Stack.of(this).account}-cdk-ssm-document-storage`;
-    const bucket = new s3.Bucket(this, 'DistributorPackages', {
+    const bucketName = `${Stack.of(this).account}-cdk-ssm-document-storage`;
+    const bucket = new aws_s3.Bucket(this, 'DistributorPackages', {
       bucketName: bucketName,
     });
-    const packageDeploy = new s3deploy.BucketDeployment(this, 'distribution-packages', {
-      sources: [s3deploy.Source.asset('../location/to/distributor/packages')],
-      destinationBucket: bucket
-    });
+    const packageDeploy = new aws_s3_deployment.BucketDeployment(
+      this,
+      'distribution-packages',
+      {
+        sources: [aws_s3_deployment.Source.asset('../location/to/distributor/packages')],
+        destinationBucket: bucket,
+      }
+    );
 
-    file = path.join(
+    const file = path.join(
       __dirname,
       '../location/to/distributor/packages/v1/manifest.json'
     );
-    const docE = new Document(this, `SSM-Distribution-Package`, {
+    const doc = new Document(this, `SSM-Distribution-Package`, {
       documentType: 'Package',
       name: 'Test-Distribution-Package',
       content: fs.readFileSync(file).toString(),
       versionName: '1.0-Custom-Name',
-      attachments: [
-        { key: "SourceUrl", values: [`s3://${bucketName}/v1`] }
-      ]
+      attachments: [{ key: 'SourceUrl', values: [`s3://${bucketName}/v1`] }],
     });
 
     /**
@@ -193,14 +190,15 @@ export class TestStack extends cdk.Stack {
      * ```
      */
     doc.lambda.role?.addToPrincipalPolicy(
-      new statement.S3() //
-        .allow()
-        .toGetObject()
-        .onObject(bucket.bucketName, '*')
+      new aws_iam.PolicyStatement({
+        actions: ['s3:GetObject'],
+        resources: [`${bucket.arnForObjects('*')}`],
+      })
     );
     doc.node.addDependency(packageDeploy);
   }
 }
+
 ```
 
 ## Deploying many documents in a single stack

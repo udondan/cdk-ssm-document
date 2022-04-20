@@ -60,11 +60,10 @@
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1069.0",
     "constructs": "^10.0.0",
-    "jsii": "^1.52.1",
-    "jsii-pacmak": "^1.52.1",
+    "jsii": "1.55.1",
+    "jsii-pacmak": "1.55.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5",
-    "cdk-iam-floyd": "^0.300.0",
     "aws-cloudformation-custom-resource": "^2.0.1"
   },
   "dependencies": {
@@ -72,7 +71,6 @@
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.0.0",
-    "cdk-iam-floyd": "^0.300.0",
     "constructs": "^10.0.0"
   },
   "bundleDependencies": [
