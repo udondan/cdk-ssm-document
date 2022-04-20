@@ -1,15 +1,12 @@
-import * as cdk from 'aws-cdk-lib';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import { aws_iam, aws_s3, aws_s3_deployment, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import fs = require('fs');
 import path = require('path');
 
 import { Document } from '../../lib';
 
-export class TestStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class TestStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     let file = path.join(
       __dirname,
@@ -68,21 +65,23 @@ export class TestStack extends cdk.Stack {
      *
      * Requires a bucket to hold install/update/uninstall scripts.
      */
-    const bucketName = `${cdk.Stack.of(this).account}-cdk-ssm-document-storage`;
-    const bucket = new s3.Bucket(this, 'DistributorPackages', {
+    const bucketName = `${Stack.of(this).account}-cdk-ssm-document-storage`;
+    const bucket = new aws_s3.Bucket(this, 'DistributorPackages', {
       bucketName: bucketName,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,
-      encryption: s3.BucketEncryption.KMS_MANAGED,
+      encryption: aws_s3.BucketEncryption.KMS_MANAGED,
       // Makes for easy destroy and rerun of this stack over and over.
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
-    const packageDeploy = new s3deploy.BucketDeployment(
+    const packageDeploy = new aws_s3_deployment.BucketDeployment(
       this,
       'distribution-packages',
       {
-        sources: [s3deploy.Source.asset('../test/documents/distributor')],
+        sources: [
+          aws_s3_deployment.Source.asset('../test/documents/distributor'),
+        ],
         destinationBucket: bucket,
       }
     );
@@ -117,7 +116,7 @@ export class TestStack extends cdk.Stack {
      * `Active`.
      */
     docE.lambda.role?.addToPrincipalPolicy(
-      new iam.PolicyStatement({
+      new aws_iam.PolicyStatement({
         actions: ['s3:GetObject'],
         resources: [`${bucket.arnForObjects('*')}`],
       })

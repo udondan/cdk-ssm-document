@@ -1,6 +1,16 @@
-import cdk = require('aws-cdk-lib');
-import iam = require('aws-cdk-lib/aws-iam');
-import lambda = require('aws-cdk-lib/aws-lambda');
+import {
+  Annotations,
+  aws_iam,
+  aws_lambda,
+  CustomResource,
+  Duration,
+  ITaggable,
+  Lazy,
+  Stack,
+  StackProps,
+  TagManager,
+  TagType,
+} from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import yaml = require('js-yaml');
 import path = require('path');
@@ -142,7 +152,7 @@ export interface DocumentContent {
 /**
  * Definition of the SSM document
  */
-export interface DocumentProps extends cdk.StackProps {
+export interface DocumentProps extends StackProps {
   /**
    * Defines if the default version should be updated to the latest version on document updates
    *
@@ -190,7 +200,7 @@ export interface DocumentProps extends cdk.StackProps {
 /**
  * An SSM document
  */
-export class Document extends Construct implements cdk.ITaggable {
+export class Document extends Construct implements ITaggable {
   /**
    * Name of the document
    */
@@ -199,12 +209,12 @@ export class Document extends Construct implements cdk.ITaggable {
   /**
    * Resource tags
    */
-  public readonly tags: cdk.TagManager;
+  public readonly tags: TagManager;
 
   /**
    * The lambda function that is created
    */
-  public readonly lambda: lambda.IFunction;
+  public readonly lambda: aws_lambda.IFunction;
 
   /**
    * Defines a new SSM document
@@ -212,15 +222,15 @@ export class Document extends Construct implements cdk.ITaggable {
   constructor(scope: Construct, id: string, props: DocumentProps) {
     super(scope, id);
 
-    this.tags = new cdk.TagManager(cdk.TagType.MAP, 'Custom::SSM-Document');
+    this.tags = new TagManager(TagType.MAP, 'Custom::SSM-Document');
     this.tags.setTag(createdByTag, ID);
 
-    const stack = cdk.Stack.of(this).stackName;
+    const stack = Stack.of(this).stackName;
     this.lambda = this.ensureLambda();
     const name = this.fixDocumentName(props.name);
 
     if (name.length < 3 || name.length > 128) {
-      cdk.Annotations.of(this).addError(
+      Annotations.of(this).addError(
         `SSM Document name ${name} is invalid. The name must be between 3 and 128 characters.`
       );
       return;
@@ -232,7 +242,7 @@ export class Document extends Construct implements cdk.ITaggable {
       content = yaml.safeLoad(content) as DocumentContent;
     }
 
-    const document = new cdk.CustomResource(this, `SSM-Document-${name}`, {
+    const document = new CustomResource(this, `SSM-Document-${name}`, {
       serviceToken: this.lambda.functionArn,
       resourceType: resourceType,
       properties: {
@@ -244,7 +254,7 @@ export class Document extends Construct implements cdk.ITaggable {
         attachments: props.attachments,
         versionName: props.versionName,
         StackName: stack,
-        tags: cdk.Lazy.any({
+        tags: Lazy.any({
           produce: () => this.tags.renderTags(),
         }),
       },
@@ -254,73 +264,79 @@ export class Document extends Construct implements cdk.ITaggable {
     this.name = document.getAttString('Name');
   }
 
-  private ensureLambda(): lambda.Function {
-    const stack = cdk.Stack.of(this);
+  private ensureLambda(): aws_lambda.Function {
+    const stack = Stack.of(this);
     const constructName = 'SSM-Document-Manager-Lambda';
     const existing = stack.node.tryFindChild(constructName);
     if (existing) {
-      return existing as lambda.Function;
+      return existing as aws_lambda.Function;
     }
 
-    const policy = new iam.ManagedPolicy(stack, 'SSM-Document-Manager-Policy', {
-      managedPolicyName: `${stack.stackName}-${cleanID}`,
-      description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
-      statements: [
-        new iam.PolicyStatement({
-          actions: ['ssm:ListDocuments', 'ssm:ListTagsForResource'],
-          resources: ['*'],
-        }),
-        new iam.PolicyStatement({
-          actions: ['ssm:AddTagsToResource', 'ssm:CreateDocument'],
-          resources: ['*'],
-          conditions: {
-            StringLike: {
-              'aws:RequestTag/CreatedByCfnCustomResource': ID,
+    const policy = new aws_iam.ManagedPolicy(
+      stack,
+      'SSM-Document-Manager-Policy',
+      {
+        managedPolicyName: `${stack.stackName}-${cleanID}`,
+        description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
+        statements: [
+          new aws_iam.PolicyStatement({
+            actions: ['ssm:ListDocuments', 'ssm:ListTagsForResource'],
+            resources: ['*'],
+          }),
+          new aws_iam.PolicyStatement({
+            actions: ['ssm:AddTagsToResource', 'ssm:CreateDocument'],
+            resources: ['*'],
+            conditions: {
+              StringLike: {
+                'aws:RequestTag/CreatedByCfnCustomResource': ID,
+              },
             },
-          },
-        }),
-        new iam.PolicyStatement({
-          actions: [
-            'ssm:AddTagsToResource',
-            'ssm:DeleteDocument',
-            'ssm:DescribeDocument',
-            'ssm:GetDocument',
-            'ssm:ListDocumentVersions',
-            'ssm:ModifyDocumentPermission',
-            'ssm:RemoveTagsFromResource',
-            'ssm:UpdateDocument',
-            'ssm:UpdateDocumentDefaultVersion',
-          ],
-          resources: ['*'],
-          conditions: {
-            StringLike: {
-              'ssm:ResourceTag/CreatedByCfnCustomResource': ID,
+          }),
+          new aws_iam.PolicyStatement({
+            actions: [
+              'ssm:AddTagsToResource',
+              'ssm:DeleteDocument',
+              'ssm:DescribeDocument',
+              'ssm:GetDocument',
+              'ssm:ListDocumentVersions',
+              'ssm:ModifyDocumentPermission',
+              'ssm:RemoveTagsFromResource',
+              'ssm:UpdateDocument',
+              'ssm:UpdateDocumentDefaultVersion',
+            ],
+            resources: ['*'],
+            conditions: {
+              StringLike: {
+                'ssm:ResourceTag/CreatedByCfnCustomResource': ID,
+              },
             },
-          },
-        }),
-      ],
-    });
+          }),
+        ],
+      }
+    );
 
-    const role = new iam.Role(stack, 'SSM-Document-Manager-Role', {
+    const role = new aws_iam.Role(stack, 'SSM-Document-Manager-Role', {
       roleName: `${stack.stackName}-${cleanID}`,
       description: `Used by Lambda ${cleanID}, which is a custom CFN resource, managing SSM documents`,
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      assumedBy: new aws_iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         policy,
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
+        aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
           'service-role/AWSLambdaBasicExecutionRole'
         ),
       ],
     });
 
-    const fn = new lambda.Function(stack, constructName, {
+    const fn = new aws_lambda.Function(stack, constructName, {
       functionName: `${stack.stackName}-${cleanID}`,
       role: role,
       description: 'Custom CFN resource: Manage SSM Documents',
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: aws_lambda.Runtime.NODEJS_14_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/code.zip')),
-      timeout: cdk.Duration.minutes(lambdaTimeout),
+      code: aws_lambda.Code.fromAsset(
+        path.join(__dirname, '../lambda/code.zip')
+      ),
+      timeout: Duration.minutes(lambdaTimeout),
     });
 
     return fn;
