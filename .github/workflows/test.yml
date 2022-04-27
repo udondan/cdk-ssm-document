@@ -35,14 +35,14 @@ jobs:
           chmod 777 $GITHUB_WORKSPACE/test/cdk.out --recursive
           chmod 777 $GITHUB_WORKSPACE/lambda --recursive
 
-      - name: Deploy
-        run: cd test-python && make deploy
+      - name: Deploy Typescript Stack
+        run: cd test && make deploy DESTROY
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Destroy
-        run: cd test-python && make DESTROY
+      - name: Deploy Python Stack
+        run: cd test-python && make deploy DESTROY
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
