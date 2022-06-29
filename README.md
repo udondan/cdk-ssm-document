@@ -14,6 +14,8 @@
 
 [AWS CDK] L3 construct for managing SSM Documents.
 
+**DEPRECATED! [CloudFormation now natively supports document updates](https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ssm/pull/173). CDK supports this since 2.29.0. This package will no longer be maintained.**
+
 CloudFormation's support for SSM Documents [currently is lacking updating functionality](https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/339). Instead of updating a document, CFN will replace it. The old document is destroyed and a new one is created with a different name. This is problematic because:
 
 - When names potentially change, you cannot directly reference a document
